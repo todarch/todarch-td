@@ -1,10 +1,9 @@
 package com.todarch.td.infrastructure.security;
 
+import com.todarch.security.api.JwtConfigurerProvider;
 import com.todarch.td.Endpoints;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,8 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-  private final JwtTokenUtil jwtTokenUtil;
 
   @Override
   public void configure(WebSecurity web) throws Exception {
@@ -43,6 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(Endpoints.NON_SECURED + "/**").permitAll()
         .anyRequest().authenticated()
         .and()
-        .apply(new JwtConfigurer(jwtTokenUtil));
+        .apply(JwtConfigurerProvider.get());
   }
 }
