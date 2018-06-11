@@ -1,6 +1,7 @@
 package com.todarch.td.domain.todo.model;
 
 import com.todarch.td.domain.shared.Priority;
+import com.todarch.td.infrastructure.persistence.AuditEntity;
 import lombok.AccessLevel;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import javax.persistence.Id;
 
 @Entity
 @Setter(AccessLevel.PROTECTED)
-public class TodoEntity {
+public class TodoEntity extends AuditEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
