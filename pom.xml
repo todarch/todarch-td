@@ -25,6 +25,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.todarch</groupId>
+            <artifactId>security</artifactId>
+            <version>${todarch.security.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
@@ -65,12 +71,6 @@
             <version>${swagger2.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.todarch</groupId>
-            <artifactId>security</artifactId>
-            <version>${todarch.security.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -88,7 +88,7 @@
 
     <repositories>
         <repository>
-            <id>mvn-repo</id>
+            <id>z-mvn-repo</id>
             <url>https://rawgit.com/todarch/todarch-mvn-repo/master</url>
             <releases>
                 <enabled>true</enabled>
