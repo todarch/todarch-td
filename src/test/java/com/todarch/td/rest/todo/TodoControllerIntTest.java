@@ -80,7 +80,7 @@ public class TodoControllerIntTest extends BaseIntTest {
   public void getCurrentUserTodos() throws Exception {
     TodoEntity testTodo = dbHelper.createTestTodo();
 
-    String expectedJson = TestUtil.toJsonString(Collections.singletonList(testTodo));
+    String expectedJson = TestUtil.toJsonString(List.of(testTodo));
 
     mockMvc.perform(get(Endpoints.TODOS)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
