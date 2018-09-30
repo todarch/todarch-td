@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
+import java.util.List;
 
 public final class TestUser {
   public TestUser() {
@@ -22,7 +23,7 @@ public final class TestUser {
         new UsernamePasswordAuthenticationToken(
             EMAIL,
             "",
-            Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+            List.of(new SimpleGrantedAuthority("ROLE_USER")));
     String token = jwtUtil.createToken(authenticationToken, true, ID);
     PREFIXED_TOKEN =  JwtUtil.AUTH_PREFIX + token;
   }
