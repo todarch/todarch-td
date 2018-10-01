@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: td
+  datasource:
+    url: "${JDBC_DATABASE_URL}"
+    username: "${JDBC_DATABASE_USERNAME}"
+    password: "${JDBC_DATABASE_PASSWORD}"
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.lob.non_contextual_creation: true # fixes clob creation exception
+  flyway:
+    schemas: todarhcschemas
+
+server.port: 6364
