@@ -10,6 +10,7 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
   @Override
   public Optional<Long> getCurrentAuditor() {
     return SecurityUtil.getUserContext()
-        .map(UserContext::getUserId);
+        .map(UserContext::getUserId)
+        .or(() -> Optional.of(-1L));
   }
 }
