@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: td
+  cloud:
+    config:
+      uri: https://todarch-cs.herokuapp.com
+      fail-fast: true
+
+server:
+  port: 6364
+
