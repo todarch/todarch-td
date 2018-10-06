@@ -60,7 +60,8 @@ public class TodoManagerImpl implements TodoManager {
         .orElseThrow(() -> new RuntimeException("Resource not found"));
 
     todoEntity.updateStatusTo(csc.getChangeTo());
+    TodoEntity reloadEntity = todoRepository.saveAndFlush(todoEntity);
     log.info("Status of TodoItem#{} changed to {}", todoEntity.id(), todoEntity.status());
-    return TodoDto.from(todoEntity);
+    return TodoDto.from(reloadEntity);
   }
 }
