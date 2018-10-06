@@ -2,17 +2,21 @@ package com.todarch.td.domain.todo.model;
 
 import com.todarch.td.domain.shared.Priority;
 import com.todarch.td.infrastructure.persistence.AuditEntity;
+import com.todarch.td.infrastructure.persistence.converter.MinDurationConverter;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.Duration;
 
 @Entity
 @Table(name = "TODOS")
@@ -38,6 +42,10 @@ public class TodoEntity extends AuditEntity {
   @Column(nullable = false)
   @Enumerated
   private TodoStatus todoStatus;
+
+  @Column
+  @Convert(converter = MinDurationConverter.class)
+  private Duration timeNeededInMin;
 
   protected TodoEntity() {
     this.todoStatus = TodoStatus.INITIAL;
@@ -65,6 +73,22 @@ public class TodoEntity extends AuditEntity {
 
   public TodoStatus status() {
     return todoStatus;
+  }
+
+  public Duration timeNeededInMin() {
+    return timeNeededInMin;
+  }
+
+  /**
+   * Sets time needed to complete the todoItem.
+   * We may not set this value, and use zero instead.
+   */
+  public void setTimeNeededInMin(Duration timeNeededInMin) {
+    Duration setValue = timeNeededInMin;
+    if (setValue == null) {
+      setValue = Duration.ZERO;
+    }
+    this.timeNeededInMin = setValue;
   }
 
   /**

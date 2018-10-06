@@ -58,6 +58,8 @@ public class TodoControllerIntTest extends BaseIntTest {
     Assertions.assertThat(allByUserId).isNotEmpty();
     TodoEntity createdTodo = allByUserId.get(0);
     Assertions.assertThat(createdTodo.status()).isEqualTo(TodoStatus.INITIAL);
+    Assertions.assertThat(createdTodo.timeNeededInMin().toMinutes())
+        .isEqualTo(newTodoReq.getTimeNeededInMin());
   }
 
   @Test
@@ -72,7 +74,8 @@ public class TodoControllerIntTest extends BaseIntTest {
         .andExpect(jsonPath("$.title").exists())
         .andExpect(jsonPath("$.description").exists())
         .andExpect(jsonPath("$.priority").exists())
-        .andExpect(jsonPath("$.status").exists());
+        .andExpect(jsonPath("$.status").exists())
+        .andExpect(jsonPath("$.timeNeededInMin").exists());
   }
 
   @Test

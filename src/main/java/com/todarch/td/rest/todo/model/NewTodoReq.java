@@ -7,4 +7,5 @@ public class NewTodoReq {
   private String title;
   private String description;
   private int priority;
+  private long timeNeededInMin;
 }

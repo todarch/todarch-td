@@ -15,6 +15,7 @@ public final class Requests {
     newTodoReq.setTitle("New Title");
     newTodoReq.setDescription("New Description");
     newTodoReq.setPriority(5);
+    newTodoReq.setTimeNeededInMin(63);
     return newTodoReq;
   }
 }

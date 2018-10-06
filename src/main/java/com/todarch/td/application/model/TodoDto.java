@@ -13,6 +13,7 @@ public class TodoDto {
   private String description;
   private int priority;
   private String status;
+  private long timeNeededInMin;
 
   /**
    * Maps todoEntity to dto.
@@ -25,6 +26,7 @@ public class TodoDto {
     todoDto.setDescription(todoEntity.description());
     todoDto.setPriority(todoEntity.priority().value());
     todoDto.setStatus(todoEntity.status().name());
+    todoDto.setTimeNeededInMin(todoEntity.timeNeededInMin().toMinutes());
     return todoDto;
   }
 }
