@@ -3,6 +3,7 @@ package com.todarch.td.rest.todo;
 import com.todarch.security.api.JwtUtil;
 import com.todarch.td.Endpoints;
 import com.todarch.td.domain.todo.model.TodoEntity;
+import com.todarch.td.domain.todo.model.TodoStatus;
 import com.todarch.td.domain.todo.repository.TodoRepository;
 import com.todarch.td.helper.BaseIntTest;
 import com.todarch.td.helper.Requests;
@@ -20,11 +21,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,14 +44,7 @@ public class TodoControllerIntTest extends BaseIntTest {
   private TodoRepository todoRepository;
 
   @Test
-  public void testUserContext() throws Exception {
-    mockMvc.perform(get("/todo")
-    .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  public void createTodo() throws Exception {
+  public void createTodoInInitialState() throws Exception {
     NewTodoReq newTodoReq = Requests.newTodoReq();
 
     mockMvc.perform(post(Endpoints.TODOS)
@@ -60,6 +56,8 @@ public class TodoControllerIntTest extends BaseIntTest {
 
     List<TodoEntity> allByUserId = todoRepository.findAllByUserId(TestUser.ID);
     Assertions.assertThat(allByUserId).isNotEmpty();
+    TodoEntity createdTodo = allByUserId.get(0);
+    Assertions.assertThat(createdTodo.status()).isEqualTo(TodoStatus.INITIAL);
   }
 
   @Test
@@ -73,7 +71,8 @@ public class TodoControllerIntTest extends BaseIntTest {
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.title").exists())
         .andExpect(jsonPath("$.description").exists())
-        .andExpect(jsonPath("$.priority").exists());
+        .andExpect(jsonPath("$.priority").exists())
+        .andExpect(jsonPath("$.status").exists());
   }
 
   @Test
@@ -87,5 +86,16 @@ public class TodoControllerIntTest extends BaseIntTest {
         .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
         .andExpect(status().isOk())
         .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  public void changeTodoItemStatus() throws Exception {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+
+    mockMvc.perform(put("/api/todo/" + testTodo.id() + "/done")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value(TodoStatus.DONE.name()));
   }
 }

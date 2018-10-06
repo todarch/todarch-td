@@ -3,10 +3,12 @@ package com.todarch.td.domain.todo.model;
 import com.todarch.td.domain.shared.Priority;
 import com.todarch.td.infrastructure.persistence.AuditEntity;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,8 +35,12 @@ public class TodoEntity extends AuditEntity {
   @Column(nullable = false)
   private Priority priority;
 
+  @Column(nullable = false)
+  @Enumerated
+  private TodoStatus todoStatus;
+
   protected TodoEntity() {
-    // np public access
+    this.todoStatus = TodoStatus.INITIAL;
   }
 
   public Long id() {
@@ -55,5 +61,29 @@ public class TodoEntity extends AuditEntity {
 
   public Priority priority() {
     return priority;
+  }
+
+  public TodoStatus status() {
+    return todoStatus;
+  }
+
+  /**
+   * Updates status to given todoItem status.
+   *
+   * @param changeTo next status of the item
+   */
+  public void updateStatusTo(@NonNull TodoStatus changeTo) {
+    if (isDone()) {
+      throw new RuntimeException("cannot update is in done state");
+    }
+    if (TodoStatus.INITIAL.equals(changeTo)) {
+      throw new RuntimeException("cannot change to initial state");
+    }
+
+    this.todoStatus = changeTo;
+  }
+
+  private boolean isDone() {
+    return TodoStatus.DONE.equals(todoStatus);
   }
 }

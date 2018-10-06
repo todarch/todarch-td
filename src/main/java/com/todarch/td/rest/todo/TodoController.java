@@ -4,8 +4,10 @@ import com.todarch.security.api.SecurityUtil;
 import com.todarch.security.api.UserContext;
 import com.todarch.td.Endpoints;
 import com.todarch.td.application.TodoManager;
+import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDto;
+import com.todarch.td.domain.todo.model.TodoStatus;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import com.todarch.td.rest.todo.model.NewTodoRes;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,12 +30,6 @@ import java.util.Optional;
 public class TodoController {
 
   private final TodoManager todoManager;
-
-  @GetMapping("/todo")
-  public void todo() {
-    Optional<UserContext> userContext = SecurityUtil.getUserContext();
-    log.info("Did i get user context correct?");
-  }
 
   /**
    * Creates a new td for current user.
@@ -59,5 +56,25 @@ public class TodoController {
   public ResponseEntity<TodoDto> getTodoById(@PathVariable("todoId") Long todoId) {
     TodoDto todo = todoManager.getTodoById(todoId);
     return ResponseEntity.ok(todo);
+  }
+
+  /**
+   * Change the status of todoItem.
+   *
+   * @param todoId id to operate on
+   * @param action appropriate status to change to
+   * @return updated resource
+   */
+  @PutMapping("/api/todo/{todoId}/{action}")
+  public ResponseEntity<TodoDto> changeTodoStatus(
+      @PathVariable("todoId") Long todoId,
+      @PathVariable("action") String action) {
+    ChangeStatusCommand csc = new ChangeStatusCommand();
+    csc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
+    csc.setTodoId(todoId);
+    csc.setChangeTo(TodoStatus.toTodoStatus(action));
+
+    TodoDto updatedTodo = todoManager.changeStatus(csc);
+    return ResponseEntity.ok(updatedTodo);
   }
 }

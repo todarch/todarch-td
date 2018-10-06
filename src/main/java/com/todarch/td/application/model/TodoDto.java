@@ -12,6 +12,7 @@ public class TodoDto {
   private String title;
   private String description;
   private int priority;
+  private String status;
 
   /**
    * Maps todoEntity to dto.
@@ -23,6 +24,7 @@ public class TodoDto {
     todoDto.setTitle(todoEntity.title());
     todoDto.setDescription(todoEntity.description());
     todoDto.setPriority(todoEntity.priority().value());
+    todoDto.setStatus(todoEntity.status().name());
     return todoDto;
   }
 }

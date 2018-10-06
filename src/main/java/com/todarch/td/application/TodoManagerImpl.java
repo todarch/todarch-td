@@ -2,6 +2,7 @@ package com.todarch.td.application;
 
 import com.todarch.security.api.SecurityUtil;
 import com.todarch.security.api.UserContext;
+import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDto;
 import com.todarch.td.domain.todo.model.TodoEntity;
@@ -51,5 +52,15 @@ public class TodoManagerImpl implements TodoManager {
         .stream()
         .map(TodoDto::from)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public TodoDto changeStatus(@NonNull ChangeStatusCommand csc) {
+    TodoEntity todoEntity = todoRepository.findById(csc.getTodoId())
+        .orElseThrow(() -> new RuntimeException("Resource not found"));
+
+    todoEntity.updateStatusTo(csc.getChangeTo());
+    log.info("Status of TodoItem#{} changed to {}", todoEntity.id(), todoEntity.status());
+    return TodoDto.from(todoEntity);
   }
 }

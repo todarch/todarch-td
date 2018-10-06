@@ -1,0 +1,2 @@
+ALTER TABLE TODOS
+  ADD TODO_STATUS smallint;
