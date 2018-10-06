@@ -28,12 +28,6 @@ public class TodoController {
 
   private final TodoManager todoManager;
 
-  @GetMapping("/todo")
-  public void todo() {
-    Optional<UserContext> userContext = SecurityUtil.getUserContext();
-    log.info("Did i get user context correct?");
-  }
-
   /**
    * Creates a new td for current user.
    * Returns 201 and id of the newly created td.

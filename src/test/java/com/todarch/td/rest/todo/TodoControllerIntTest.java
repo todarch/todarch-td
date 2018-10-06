@@ -3,6 +3,7 @@ package com.todarch.td.rest.todo;
 import com.todarch.security.api.JwtUtil;
 import com.todarch.td.Endpoints;
 import com.todarch.td.domain.todo.model.TodoEntity;
+import com.todarch.td.domain.todo.model.TodoStatus;
 import com.todarch.td.domain.todo.repository.TodoRepository;
 import com.todarch.td.helper.BaseIntTest;
 import com.todarch.td.helper.Requests;
@@ -48,7 +49,7 @@ public class TodoControllerIntTest extends BaseIntTest {
   }
 
   @Test
-  public void createTodo() throws Exception {
+  public void createTodoInInitialState() throws Exception {
     NewTodoReq newTodoReq = Requests.newTodoReq();
 
     mockMvc.perform(post(Endpoints.TODOS)
@@ -60,6 +61,8 @@ public class TodoControllerIntTest extends BaseIntTest {
 
     List<TodoEntity> allByUserId = todoRepository.findAllByUserId(TestUser.ID);
     Assertions.assertThat(allByUserId).isNotEmpty();
+    TodoEntity createdTodo = allByUserId.get(0);
+    Assertions.assertThat(createdTodo.status()).isEqualTo(TodoStatus.INITIAL);
   }
 
   @Test
@@ -73,7 +76,8 @@ public class TodoControllerIntTest extends BaseIntTest {
         .andExpect(jsonPath("$.id").exists())
         .andExpect(jsonPath("$.title").exists())
         .andExpect(jsonPath("$.description").exists())
-        .andExpect(jsonPath("$.priority").exists());
+        .andExpect(jsonPath("$.priority").exists())
+        .andExpect(jsonPath("$.status").exists());
   }
 
   @Test

@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,8 +34,12 @@ public class TodoEntity extends AuditEntity {
   @Column(nullable = false)
   private Priority priority;
 
+  @Column(nullable = false)
+  @Enumerated
+  private TodoStatus todoStatus;
+
   protected TodoEntity() {
-    // np public access
+    this.todoStatus = TodoStatus.INITIAL;
   }
 
   public Long id() {
@@ -55,5 +60,9 @@ public class TodoEntity extends AuditEntity {
 
   public Priority priority() {
     return priority;
+  }
+
+  public TodoStatus status() {
+    return todoStatus;
   }
 }
