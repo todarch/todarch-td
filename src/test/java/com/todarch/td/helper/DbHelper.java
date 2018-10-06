@@ -1,11 +1,10 @@
 package com.todarch.td.helper;
 
-import com.todarch.security.api.JwtUtil;
 import com.todarch.td.application.model.NewTodoCommand;
-import com.todarch.td.domain.todo.model.TodoEntity;
-import com.todarch.td.domain.todo.model.TodoFactory;
-import com.todarch.td.domain.todo.repository.TodoRepository;
-import com.todarch.td.rest.TestUser;
+import com.todarch.td.domain.tag.TagRepository;
+import com.todarch.td.domain.todo.TodoEntity;
+import com.todarch.td.domain.todo.TodoFactory;
+import com.todarch.td.domain.todo.TodoRepository;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,9 @@ import org.springframework.stereotype.Component;
 public class DbHelper {
   @Autowired
   private TodoRepository todoRepository;
+
+  @Autowired
+  private TagRepository tagRepository;
 
   /**
    * Creates test td item.
@@ -28,6 +30,7 @@ public class DbHelper {
 
   public void clearAll() {
     todoRepository.deleteAll();
+    tagRepository.deleteAll();
   }
 }
 

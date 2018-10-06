@@ -1,6 +1,6 @@
 package com.todarch.td.application.model;
 
-import com.todarch.td.domain.todo.model.TodoStatus;
+import com.todarch.td.domain.todo.TodoStatus;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
 package com.todarch.td.application.model;
 
-import com.todarch.td.domain.todo.model.TodoEntity;
+import com.todarch.td.domain.todo.TodoEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

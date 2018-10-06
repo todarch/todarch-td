@@ -1,13 +1,12 @@
 package com.todarch.td.rest.todo;
 
 import com.todarch.security.api.SecurityUtil;
-import com.todarch.security.api.UserContext;
 import com.todarch.td.Endpoints;
 import com.todarch.td.application.TodoManager;
 import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDto;
-import com.todarch.td.domain.todo.model.TodoStatus;
+import com.todarch.td.domain.todo.TodoStatus;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import com.todarch.td.rest.todo.model.NewTodoRes;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -65,7 +63,7 @@ public class TodoController {
    * @param action appropriate status to change to
    * @return updated resource
    */
-  @PutMapping("/api/todo/{todoId}/{action}")
+  @PutMapping("/api/todos/{todoId}/{action}")
   public ResponseEntity<TodoDto> changeTodoStatus(
       @PathVariable("todoId") Long todoId,
       @PathVariable("action") String action) {

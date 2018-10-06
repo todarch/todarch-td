@@ -1,6 +1,6 @@
-package com.todarch.td.domain.todo.repository;
+package com.todarch.td.domain.todo;
 
-import com.todarch.td.domain.todo.model.TodoEntity;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
