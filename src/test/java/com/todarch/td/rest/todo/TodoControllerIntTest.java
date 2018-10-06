@@ -97,7 +97,7 @@ public class TodoControllerIntTest extends BaseIntTest {
   public void changeTodoItemStatus() throws Exception {
     TodoEntity testTodo = dbHelper.createTestTodo();
 
-    mockMvc.perform(put("/api/todo/" + testTodo.id() + "/done")
+    mockMvc.perform(put("/api/todos/" + testTodo.id() + "/done")
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
         .andExpect(status().isOk())

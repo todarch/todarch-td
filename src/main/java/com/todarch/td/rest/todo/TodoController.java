@@ -63,7 +63,7 @@ public class TodoController {
    * @param action appropriate status to change to
    * @return updated resource
    */
-  @PutMapping("/api/todo/{todoId}/{action}")
+  @PutMapping("/api/todos/{todoId}/{action}")
   public ResponseEntity<TodoDto> changeTodoStatus(
       @PathVariable("todoId") Long todoId,
       @PathVariable("action") String action) {
