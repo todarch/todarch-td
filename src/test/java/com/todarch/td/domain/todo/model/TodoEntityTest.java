@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.time.Duration;
+
 import static org.junit.Assert.fail;
 
 /**
@@ -49,5 +51,12 @@ public class TodoEntityTest {
     TodoEntity todoEntity = new TodoEntity();
     todoEntity.updateStatusTo(TodoStatus.DONE);
     Assertions.assertThat(todoEntity.status()).isEqualTo(TodoStatus.DONE);
+  }
+
+  @Test
+  public void useZeroValueDurationIfNotProvided() {
+    TodoEntity todoEntity = new TodoEntity();
+    todoEntity.setTimeNeededInMin(null);
+    Assertions.assertThat(todoEntity.timeNeededInMin()).isEqualTo(Duration.ZERO);
   }
 }

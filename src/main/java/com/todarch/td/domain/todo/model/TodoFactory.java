@@ -20,6 +20,7 @@ public final class TodoFactory {
     todoEntity.setTitle(command.getTitle());
     todoEntity.setDescription(command.getDescription());
     todoEntity.setPriority(command.getPriority());
+    todoEntity.setTimeNeededInMin(command.getTimeNeeded());
     return todoEntity;
   }
 }
