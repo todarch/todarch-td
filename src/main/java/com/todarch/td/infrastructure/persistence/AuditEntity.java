@@ -24,11 +24,11 @@ public class AuditEntity {
   @LastModifiedDate
   private Instant modifiedDate;
 
-  @Column(name = "CREATED_BY")
+  @Column(name = "CREATED_BY", nullable = false, updatable = false)
   @CreatedBy
-  private Long createdBy;
+  private Long createdBy = -1L;
 
-  @Column(name = "MODIFIED_BY")
+  @Column(name = "MODIFIED_BY", nullable = false)
   @LastModifiedBy
-  private Long modifiedBy;
+  private Long modifiedBy = -1L;
 }
