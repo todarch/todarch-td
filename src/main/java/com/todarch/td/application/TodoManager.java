@@ -1,5 +1,6 @@
 package com.todarch.td.application;
 
+import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDto;
 
@@ -13,4 +14,6 @@ public interface TodoManager {
   TodoDto getTodoById(Long todoId);
 
   List<TodoDto> getCurrentUserTodos();
+
+  TodoDto changeStatus(ChangeStatusCommand csc);
 }

@@ -7,4 +7,10 @@ package com.todarch.td.domain.todo.model;
  */
 public enum  TodoStatus {
   INITIAL,
+  DONE;
+
+
+  public static TodoStatus toTodoStatus(String action) {
+    return valueOf(action.toUpperCase());
+  }
 }

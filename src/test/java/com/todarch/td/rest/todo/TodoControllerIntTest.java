@@ -21,11 +21,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,13 +42,6 @@ public class TodoControllerIntTest extends BaseIntTest {
 
   @Autowired
   private TodoRepository todoRepository;
-
-  @Test
-  public void testUserContext() throws Exception {
-    mockMvc.perform(get("/todo")
-    .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
-        .andExpect(status().isOk());
-  }
 
   @Test
   public void createTodoInInitialState() throws Exception {
@@ -91,5 +86,16 @@ public class TodoControllerIntTest extends BaseIntTest {
         .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
         .andExpect(status().isOk())
         .andExpect(content().json(expectedJson));
+  }
+
+  @Test
+  public void changeTodoItemStatus() throws Exception {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+
+    mockMvc.perform(put("/api/todo/" + testTodo.id() + "/done")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value(TodoStatus.DONE.name()));
   }
 }
