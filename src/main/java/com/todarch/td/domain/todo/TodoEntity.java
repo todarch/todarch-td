@@ -1,22 +1,30 @@
-package com.todarch.td.domain.todo.model;
+package com.todarch.td.domain.todo;
 
 import com.todarch.td.domain.shared.Priority;
+import com.todarch.td.domain.tag.Tag;
 import com.todarch.td.infrastructure.persistence.AuditEntity;
 import com.todarch.td.infrastructure.persistence.converter.MinDurationConverter;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "TODOS")
@@ -47,7 +55,32 @@ public class TodoEntity extends AuditEntity {
   @Convert(converter = MinDurationConverter.class)
   private Duration timeNeededInMin;
 
+  @ManyToMany(
+      cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+      fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "todo_tag",
+      joinColumns = @JoinColumn(name = "todo_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id")
+  )
+  private Set<Tag> tags = new HashSet<>();
+
   protected TodoEntity() {
+    // this is for jpa
+  }
+
+  /**
+   * Accepts the required fields, and initialize other parts with default values.
+   *
+   * @param userId owner of the todoItem
+   * @param title title of the item
+   */
+  TodoEntity(@NonNull Long userId, @NonNull String title) {
+    this.userId = userId;
+    this.title = title;
+    this.priority = Priority.DEFAULT;
+    this.description = "";
+    this.timeNeededInMin = Duration.ZERO;
     this.todoStatus = TodoStatus.INITIAL;
   }
 
@@ -77,6 +110,10 @@ public class TodoEntity extends AuditEntity {
 
   public Duration timeNeededInMin() {
     return timeNeededInMin;
+  }
+
+  public Set<Tag> tags() {
+    return Collections.unmodifiableSet(tags);
   }
 
   /**
@@ -109,5 +146,9 @@ public class TodoEntity extends AuditEntity {
 
   private boolean isDone() {
     return TodoStatus.DONE.equals(todoStatus);
+  }
+
+  public void addTag(@NonNull String tagName) {
+    tags.add(new Tag(this.userId(), tagName));
   }
 }

@@ -1,5 +1,10 @@
-package com.todarch.td.domain.todo.model;
+package com.todarch.td.domain.todo;
 
+import com.todarch.td.domain.shared.Priority;
+import com.todarch.td.domain.todo.TodoEntity;
+import com.todarch.td.domain.todo.TodoStatus;
+import com.todarch.td.helper.TestTodo;
+import com.todarch.td.helper.TestUser;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +23,13 @@ import static org.junit.Assert.fail;
 public class TodoEntityTest {
 
   @Test
-  public void todoShouldBeInitializedInInitialState() {
-    TodoEntity todoEntity = new TodoEntity();
+  public void shouldBeInitializedWithDefaultValues() {
+    TodoEntity todoEntity = new TodoEntity(TestUser.ID, TestTodo.TITLE);
+
+    Assertions.assertThat(todoEntity.description()).isEmpty();
+    Assertions.assertThat(todoEntity.timeNeededInMin()).isEqualTo(Duration.ZERO);
+    Assertions.assertThat(todoEntity.priority()).isEqualTo(Priority.DEFAULT);
+    Assertions.assertThat(todoEntity.tags()).isEmpty();
     Assertions.assertThat(todoEntity.status()).isEqualTo(TodoStatus.INITIAL);
   }
 

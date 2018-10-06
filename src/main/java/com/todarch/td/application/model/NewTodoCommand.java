@@ -8,7 +8,11 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter(AccessLevel.PROTECTED)
@@ -17,6 +21,7 @@ public class NewTodoCommand {
   private String description;
   private Priority priority;
   private Duration timeNeeded;
+  private Set<String> tags;
 
   protected NewTodoCommand() {
 
@@ -31,6 +36,12 @@ public class NewTodoCommand {
     newTodoCommand.setDescription(Objects.requireNonNull(newTodoReq.getDescription()));
     newTodoCommand.setPriority(Priority.of(newTodoReq.getPriority()));
     newTodoCommand.setTimeNeeded(Duration.ofMinutes(newTodoReq.getTimeNeededInMin()));
+    Set<String> processedTags = Optional.ofNullable(newTodoReq.getTags())
+        .orElse(Collections.emptyList())
+        .stream()
+        .map(String::toLowerCase)
+        .collect(Collectors.toSet());
+    newTodoCommand.setTags(processedTags);
     return newTodoCommand;
   }
 }

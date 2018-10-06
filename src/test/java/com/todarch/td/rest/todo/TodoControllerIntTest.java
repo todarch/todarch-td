@@ -2,13 +2,13 @@ package com.todarch.td.rest.todo;
 
 import com.todarch.security.api.JwtUtil;
 import com.todarch.td.Endpoints;
-import com.todarch.td.domain.todo.model.TodoEntity;
-import com.todarch.td.domain.todo.model.TodoStatus;
-import com.todarch.td.domain.todo.repository.TodoRepository;
+import com.todarch.td.domain.todo.TodoEntity;
+import com.todarch.td.domain.todo.TodoStatus;
+import com.todarch.td.domain.todo.TodoRepository;
 import com.todarch.td.helper.BaseIntTest;
 import com.todarch.td.helper.Requests;
 import com.todarch.td.helper.TestUtil;
-import com.todarch.td.rest.TestUser;
+import com.todarch.td.helper.TestUser;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -19,10 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,9 +54,14 @@ public class TodoControllerIntTest extends BaseIntTest {
     List<TodoEntity> allByUserId = todoRepository.findAllByUserId(TestUser.ID);
     Assertions.assertThat(allByUserId).isNotEmpty();
     TodoEntity createdTodo = allByUserId.get(0);
+
     Assertions.assertThat(createdTodo.status()).isEqualTo(TodoStatus.INITIAL);
-    Assertions.assertThat(createdTodo.timeNeededInMin().toMinutes())
-        .isEqualTo(newTodoReq.getTimeNeededInMin());
+
+    long internalTime = createdTodo.timeNeededInMin().toMinutes();
+    long givenTime = newTodoReq.getTimeNeededInMin();
+    Assertions.assertThat(internalTime).isEqualTo(givenTime);
+
+    Assertions.assertThat(createdTodo.tags().size()).isEqualTo(newTodoReq.getTags().size());
   }
 
   @Test
