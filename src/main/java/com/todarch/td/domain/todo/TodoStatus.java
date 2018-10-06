@@ -1,4 +1,4 @@
-package com.todarch.td.domain.todo.model;
+package com.todarch.td.domain.todo;
 
 /**
  * Defines statuses that an TodoItem can be in.
