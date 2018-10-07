@@ -17,10 +17,12 @@ public class TodoRepositoryTest extends RepositoryTest {
   @Test
   public void persistWithTags() {
     TodoEntity todoEntity = new TodoEntity(TestUser.ID, TestTodo.TITLE);
-    todoEntity.addTag("tag1");
+    todoEntity.addTag(new Tag(TestUser.ID, "tag1"));
     TodoEntity loadTodoEntity = tem.persistFlushFind(todoEntity);
 
-    Tag savedTag = tagRepository.findByName("tag1").orElse(null);
+    Tag savedTag = tagRepository
+        .findByUserIdAndName(TestUser.ID, "tag1")
+        .orElse(null);
     Assertions.assertThat(savedTag).isNotNull();
     Assertions.assertThat(savedTag.id()).isNotNull();
   }
