@@ -7,5 +7,11 @@ import java.util.Optional;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-  Optional<Tag> findByName(String tag1);
+
+  /**
+   * Different users can have same tags.
+   * Neither of the values is unique for its column,
+   * but together they are unique.
+   */
+  Optional<Tag> findByUserIdAndName(Long userId, String tagName);
 }

@@ -148,7 +148,7 @@ public class TodoEntity extends AuditEntity {
     return TodoStatus.DONE.equals(todoStatus);
   }
 
-  public void addTag(@NonNull String tagName) {
-    tags.add(new Tag(this.userId(), tagName));
+  public void addTag(@NonNull Tag tag) {
+    tags.add(tag);
   }
 }

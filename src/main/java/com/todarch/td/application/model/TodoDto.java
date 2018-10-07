@@ -1,8 +1,12 @@
 package com.todarch.td.application.model;
 
+import com.todarch.td.domain.tag.Tag;
 import com.todarch.td.domain.todo.TodoEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +18,7 @@ public class TodoDto {
   private int priority;
   private String status;
   private long timeNeededInMin;
+  private List<String> tags;
 
   /**
    * Maps todoEntity to dto.
@@ -27,6 +32,7 @@ public class TodoDto {
     todoDto.setPriority(todoEntity.priority().value());
     todoDto.setStatus(todoEntity.status().name());
     todoDto.setTimeNeededInMin(todoEntity.timeNeededInMin().toMinutes());
+    todoDto.setTags(todoEntity.tags().stream().map(Tag::name).collect(Collectors.toList()));
     return todoDto;
   }
 }

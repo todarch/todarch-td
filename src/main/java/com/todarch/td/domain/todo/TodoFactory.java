@@ -11,15 +11,13 @@ public final class TodoFactory {
    * Creates td entity using protected setters.
    *
    * @param command data for new td
-   * @param userId associates td with
    * @return constructed td entity
    */
-  public static TodoEntity from(NewTodoCommand command, Long userId) {
-    TodoEntity todoEntity = new TodoEntity(userId, command.getTitle());
+  public static TodoEntity from(NewTodoCommand command) {
+    TodoEntity todoEntity = new TodoEntity(command.getUserId(), command.getTitle());
     todoEntity.setDescription(command.getDescription());
     todoEntity.setPriority(command.getPriority());
     todoEntity.setTimeNeededInMin(command.getTimeNeeded());
-    command.getTags().forEach(todoEntity::addTag);
     return todoEntity;
   }
 }

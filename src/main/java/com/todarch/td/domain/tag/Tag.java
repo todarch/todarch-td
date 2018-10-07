@@ -1,6 +1,8 @@
 package com.todarch.td.domain.tag;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tags")
+@EqualsAndHashCode
+@ToString
 public class Tag {
 
   @Id
@@ -31,6 +35,7 @@ public class Tag {
   private String name;
 
   protected Tag() {
+    // for jpa
   }
 
   public Tag(@NonNull Long userId, @NonNull String name) {

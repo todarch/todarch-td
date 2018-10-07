@@ -1,6 +1,7 @@
 package com.todarch.td.rest.todo;
 
 import com.todarch.security.api.SecurityUtil;
+import com.todarch.security.api.UserContext;
 import com.todarch.td.Endpoints;
 import com.todarch.td.application.TodoManager;
 import com.todarch.td.application.model.ChangeStatusCommand;
@@ -35,7 +36,12 @@ public class TodoController {
    */
   @PostMapping(Endpoints.TODOS)
   public ResponseEntity<NewTodoRes> createTodo(@RequestBody NewTodoReq newTodoReq) {
+    UserContext userContext = SecurityUtil.tryToGetUserContext();
+    Long userId = userContext.getUserId();
+
     NewTodoCommand newTodoCommand = NewTodoCommand.from(newTodoReq);
+    newTodoCommand.setUserId(userId);
+
     Long newTodoId = todoManager.createTodo(newTodoCommand);
 
     NewTodoRes newTodoRes = new NewTodoRes();

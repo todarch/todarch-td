@@ -77,7 +77,8 @@ public class TodoControllerIntTest extends BaseIntTest {
         .andExpect(jsonPath("$.description").exists())
         .andExpect(jsonPath("$.priority").exists())
         .andExpect(jsonPath("$.status").exists())
-        .andExpect(jsonPath("$.timeNeededInMin").exists());
+        .andExpect(jsonPath("$.timeNeededInMin").exists())
+        .andExpect(jsonPath("$.tags").isNotEmpty());
   }
 
   @Test
