@@ -22,6 +22,7 @@ public class NewTodoCommand {
   private Priority priority;
   private Duration timeNeeded;
   private Set<String> tags;
+  private Long userId;
 
   protected NewTodoCommand() {
 
@@ -43,5 +44,10 @@ public class NewTodoCommand {
         .collect(Collectors.toSet());
     newTodoCommand.setTags(processedTags);
     return newTodoCommand;
+  }
+
+  //TODO:selimssevgi: this value if mandatory, should be constructed in optional way
+  public void setUserId(@NonNull Long userId) {
+    this.userId = userId;
   }
 }
