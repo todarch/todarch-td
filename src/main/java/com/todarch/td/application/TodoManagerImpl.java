@@ -5,6 +5,8 @@ import com.todarch.security.api.UserContext;
 import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDto;
+import com.todarch.td.domain.tag.Tag;
+import com.todarch.td.domain.tag.TagRepository;
 import com.todarch.td.domain.todo.TodoEntity;
 import com.todarch.td.domain.todo.TodoFactory;
 import com.todarch.td.domain.todo.TodoRepository;
@@ -13,6 +15,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,18 +25,28 @@ import java.util.stream.Collectors;
 public class TodoManagerImpl implements TodoManager {
 
   private final TodoRepository todoRepository;
+  private final TagRepository tagRepository;
 
+  @Transactional
   @Override
   public Long createTodo(@NonNull NewTodoCommand newTodoCommand) {
-    UserContext userContext = SecurityUtil.tryToGetUserContext();
-    Long userId = userContext.getUserId();
-
-    TodoEntity newTodo = TodoFactory.from(newTodoCommand, userId);
+    Long userId = newTodoCommand.getUserId();
+    TodoEntity newTodo = TodoFactory.from(newTodoCommand);
+    newTodoCommand.getTags()
+        .stream()
+        .map(tagName -> getOrCreateTag(userId, tagName))
+        .forEach(newTodo::addTag);
 
     TodoEntity savedTodo = todoRepository.save(newTodo);
     log.info("Saved todo with id of {}", savedTodo.id());
 
     return savedTodo.id();
+  }
+
+  private Tag getOrCreateTag(Long userId, String tagName) {
+    return tagRepository
+        .findByUserIdAndName(userId, tagName)
+        .orElseGet(() -> tagRepository.save(new Tag(userId, tagName)));
   }
 
   @Override
