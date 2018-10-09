@@ -4,6 +4,7 @@ import com.todarch.security.api.SecurityUtil;
 import com.todarch.security.api.UserContext;
 import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
+import com.todarch.td.application.model.TodoDeletionCommand;
 import com.todarch.td.application.model.TodoDto;
 import com.todarch.td.domain.tag.Tag;
 import com.todarch.td.domain.tag.TagRepository;
@@ -76,5 +77,15 @@ public class TodoManagerImpl implements TodoManager {
     TodoEntity reloadEntity = todoRepository.saveAndFlush(todoEntity);
     log.info("Status of TodoItem#{} changed to {}", todoEntity.id(), todoEntity.status());
     return TodoDto.from(reloadEntity);
+  }
+
+  @Override
+  public void delete(@NonNull TodoDeletionCommand tdc) {
+    todoRepository.findById(tdc.getTodoId())
+        .ifPresent(todoEntity -> {
+          if (todoEntity.canBeDeletedBy(tdc.getUserId())) {
+            todoRepository.delete(todoEntity);
+          }
+        });
   }
 }

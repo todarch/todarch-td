@@ -6,6 +6,7 @@ import com.todarch.td.Endpoints;
 import com.todarch.td.application.TodoManager;
 import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
+import com.todarch.td.application.model.TodoDeletionCommand;
 import com.todarch.td.application.model.TodoDto;
 import com.todarch.td.domain.todo.TodoStatus;
 import com.todarch.td.rest.todo.model.NewTodoReq;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,5 +82,21 @@ public class TodoController {
 
     TodoDto updatedTodo = todoManager.changeStatus(csc);
     return ResponseEntity.ok(updatedTodo);
+  }
+
+  /**
+   * Deletes todoItem.
+   *
+   * @param todoId id to delete
+   * @return no content on successful operation
+   */
+  @DeleteMapping("/api/todos/{todoId}")
+  public ResponseEntity<Object> deleteTodo(@PathVariable("todoId") Long todoId) {
+    TodoDeletionCommand tdc = new TodoDeletionCommand();
+    tdc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
+    tdc.setTodoId(todoId);
+
+    todoManager.delete(tdc);
+    return ResponseEntity.noContent().build();
   }
 }

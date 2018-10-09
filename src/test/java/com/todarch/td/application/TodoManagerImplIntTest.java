@@ -2,6 +2,7 @@ package com.todarch.td.application;
 
 import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
+import com.todarch.td.application.model.TodoDeletionCommand;
 import com.todarch.td.domain.todo.TodoEntity;
 import com.todarch.td.domain.todo.TodoRepository;
 import com.todarch.td.domain.todo.TodoStatus;
@@ -49,6 +50,33 @@ public class TodoManagerImplIntTest extends ServiceIntTest {
     TodoEntity otherTodo = todoRepository.findById(newTodoId).orElse(null);
     Assertions.assertThat(otherTodo).isNotNull();
     Assertions.assertThat(otherTodo.tags()).containsExactlyElementsOf(testTodo.tags());
+  }
 
+  @Test
+  public void userCanDeleteJustTheirOwnTodo() {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+
+    TodoDeletionCommand tdc = new TodoDeletionCommand();
+    tdc.setUserId(TestUser.ID);
+    tdc.setTodoId(testTodo.id());
+
+    todoManager.delete(tdc);
+
+    TodoEntity deletedTodo = todoRepository.findById(testTodo.id()).orElse(null);
+    Assertions.assertThat(deletedTodo).isNull();
+  }
+
+  @Test
+  public void itShouldNotDeleteIfTodoDoesNotBelongToThem() {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+
+    TodoDeletionCommand tdc = new TodoDeletionCommand();
+    tdc.setUserId(TestUser.ID + 1);
+    tdc.setTodoId(testTodo.id());
+
+    todoManager.delete(tdc);
+
+    TodoEntity notTouchedTodo = todoRepository.findById(testTodo.id()).orElse(null);
+    Assertions.assertThat(notTouchedTodo).isNotNull();
   }
 }
