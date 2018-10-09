@@ -151,4 +151,8 @@ public class TodoEntity extends AuditEntity {
   public void addTag(@NonNull Tag tag) {
     tags.add(tag);
   }
+
+  public boolean canBeDeletedBy(@NonNull Long userId) {
+    return this.userId().equals(userId);
+  }
 }

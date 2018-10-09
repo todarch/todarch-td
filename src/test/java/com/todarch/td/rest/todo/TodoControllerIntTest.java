@@ -21,7 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -103,5 +105,18 @@ public class TodoControllerIntTest extends BaseIntTest {
         .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value(TodoStatus.DONE.name()));
+  }
+
+  @Test
+  public void shouldDeleteId() throws Exception {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+
+    mockMvc.perform(delete("/api/todos/" + testTodo.id())
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
+        .andExpect(status().isNoContent());
+
+    TodoEntity todoEntity = todoRepository.findById(testTodo.id()).orElse(null);
+    Assertions.assertThat(todoEntity).isNull();
   }
 }
