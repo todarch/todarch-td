@@ -28,8 +28,9 @@ public class Tag {
   @SequenceGenerator(
       name = "tag_generator",
       sequenceName = "tag_seq",
-      initialValue = 50,
-      allocationSize = 50) // keep the values same not to have negative values
+      // keep the values same and, different than default values not to have negative values.
+      initialValue = 100,
+      allocationSize = 100)
   private Long id;
 
   @Column(nullable = false)
