@@ -25,7 +25,12 @@ public class Tag {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_generator")
-  @SequenceGenerator(name = "tag_generator", sequenceName = "tag_seq")
+  @SequenceGenerator(
+      name = "tag_generator",
+      sequenceName = "tag_seq",
+      // keep the values same and, different than default values not to have negative values.
+      initialValue = 100,
+      allocationSize = 100)
   private Long id;
 
   @Column(nullable = false)
