@@ -49,7 +49,7 @@ public class TodoManagerImplIntTest extends ServiceIntTest {
 
     TodoEntity otherTodo = todoRepository.findById(newTodoId).orElse(null);
     Assertions.assertThat(otherTodo).isNotNull();
-    Assertions.assertThat(otherTodo.tags()).containsExactlyElementsOf(testTodo.tags());
+    Assertions.assertThat(otherTodo.tags()).containsOnlyElementsOf(testTodo.tags());
   }
 
   @Test

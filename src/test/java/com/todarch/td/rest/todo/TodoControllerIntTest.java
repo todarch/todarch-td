@@ -80,20 +80,20 @@ public class TodoControllerIntTest extends BaseIntTest {
         .andExpect(jsonPath("$.priority").exists())
         .andExpect(jsonPath("$.status").exists())
         .andExpect(jsonPath("$.timeNeededInMin").exists())
-        .andExpect(jsonPath("$.tags").isNotEmpty());
+        .andExpect(jsonPath("$.tags").isNotEmpty())
+        .andExpect(jsonPath("$.createdAtEpoch").isNumber());
   }
 
   @Test
   public void getCurrentUserTodos() throws Exception {
     TodoEntity testTodo = dbHelper.createTestTodo();
 
-    String expectedJson = TestUtil.toJsonString(List.of(testTodo));
-
     mockMvc.perform(get(Endpoints.TODOS)
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
         .andExpect(status().isOk())
-        .andExpect(content().json(expectedJson));
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$").isNotEmpty());
   }
 
   @Test
