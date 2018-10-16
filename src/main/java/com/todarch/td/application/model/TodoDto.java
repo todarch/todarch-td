@@ -19,6 +19,7 @@ public class TodoDto {
   private String status;
   private long timeNeededInMin;
   private List<String> tags;
+  private Long createdAtEpoch;
 
   /**
    * Maps todoEntity to dto.
@@ -33,6 +34,7 @@ public class TodoDto {
     todoDto.setStatus(todoEntity.status().name());
     todoDto.setTimeNeededInMin(todoEntity.timeNeededInMin().toMinutes());
     todoDto.setTags(todoEntity.tags().stream().map(Tag::name).collect(Collectors.toList()));
+    todoDto.setCreatedAtEpoch(todoEntity.getCreatedDate().toEpochMilli());
     return todoDto;
   }
 }
