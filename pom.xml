@@ -21,14 +21,8 @@
     <properties>
         <swagger2.version>2.8.0</swagger2.version>
         <todarch.security.version>0.0.1-SNAPSHOT</todarch.security.version>
+        <todarch.common.version>1.0-SNAPSHOT</todarch.common.version>
         <postgresql.version>42.2.4</postgresql.version>
-        <docker.image.name>todarch/td</docker.image.name>
-        <!-- These values should be passed in at build time -->
-        <build.number>000</build.number>
-        <commit.hash>local-build</commit.hash>
-        <build.user>local-build</build.user>
-        <build.repo>local-build</build.repo>
-        <circle.workflow.guid>local-build</circle.workflow.guid>
     </properties>
 
     <dependencies>
@@ -36,6 +30,12 @@
             <groupId>com.todarch</groupId>
             <artifactId>security</artifactId>
             <version>${todarch.security.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.todarch</groupId>
+            <artifactId>todarch-common</artifactId>
+            <version>${todarch.common.version}</version>
         </dependency>
 
         <dependency>
@@ -110,27 +110,6 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>0.9.11</version>
-                <configuration>
-                    <from>
-                        <image>openjdk:11-jre-slim</image>
-                    </from>
-                    <to>
-                        <image>registry.hub.docker.com/todarch/${artifactId}:${version}-b${build.number}</image>
-                    </to>
-                    <container>
-                        <jvmFlags>
-                            <jvmFlag>-DtbuildNum=${build.number}</jvmFlag>
-                            <jvmFlag>-Dtcommit=${commit.hash}</jvmFlag>
-                            <jvmFlag>-Dtuser=${build.user}</jvmFlag>
-                            <jvmFlag>-Dtrepo=${build.repo}</jvmFlag>
-                            <jvmFlag>-DworkflowGuid=${circle.workflow.guid}</jvmFlag>
-                        </jvmFlags>
-                        <ports>
-                            <port>8080</port>
-                        </ports>
-                    </container>
-                </configuration>
             </plugin>
         </plugins>
     </build>

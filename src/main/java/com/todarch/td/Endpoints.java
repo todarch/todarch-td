@@ -6,7 +6,6 @@ public final class Endpoints {
   }
 
   public static final String NON_SECURED = "/non-secured";
-  public static final String UP = NON_SECURED + "/up";
 
   private static final String API = "/api";
   public static final String TODOS = API + "/todos";
