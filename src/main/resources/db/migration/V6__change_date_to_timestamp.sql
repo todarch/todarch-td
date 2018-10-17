@@ -4,8 +4,8 @@
 -- timestamp value is in UTC
 
 ALTER TABLE TODOS
-  MODIFY COLUMN CREATED_DATE timestamp not null;
+  ALTER COLUMN CREATED_DATE TYPE timestamp;
 
 
 ALTER TABLE TODOS
-  MODIFY COLUMN MODIFIED_DATE timestamp not null;
+  ALTER COLUMN MODIFIED_DATE TYPE timestamp;
