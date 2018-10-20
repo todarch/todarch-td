@@ -1,5 +1,7 @@
 version: 2
 
+references:
+
   container_config: &container_config
     docker:
     - image: circleci/openjdk:11-jdk
