@@ -80,10 +80,13 @@ jobs:
             -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
             -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
             -Dbuild.repo=${CIRCLE_PROJECT_REPONAME}
+    - add_ssh_keys:
+        fingerprints:
+          - "80:2d:9c:70:d7:07:3f:fc:25:8d:b1:ed:4b:cd:96:73"
     - run:
-        name: Deploy docker image
+        name: Deploy app to server via Docker
         command: |
-          echo "Deploying ${IMAGE}"
+          ssh -o StrictHostKeyChecking=no selimssevgi@todarch.com "/bin/bash ./deploy_app.sh ${IMAGE}"
 
 
 workflows:
@@ -101,3 +104,6 @@ workflows:
     - deploy:
         requires:
         - test
+#        filters:
+#          branches:
+#            only: master
