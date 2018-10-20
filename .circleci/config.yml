@@ -76,9 +76,11 @@ workflows:
 
   build_test_deploy:
     jobs:
-      - checkout_code
-      - build
-      - test:
-          requires:
-            - build
-            - checkout_code
+    - checkout_code
+    - build:
+        requires:
+        - checkout_code
+    - test:
+        requires:
+        - build
+        - checkout_code
