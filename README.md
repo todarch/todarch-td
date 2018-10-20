@@ -1,7 +1,6 @@
 # Todarch Todo Service
 
-[![Build
-Status](https://www.travis-ci.com/todarch/todarch-td.svg?branch=master)](https://www.travis-ci.com/todarch/todarch-td)
+[![CircleCI](https://circleci.com/gh/todarch/todarch-td/tree/master.svg?style=svg)](https://circleci.com/gh/todarch/todarch-td/tree/master) [![Build Status](https://www.travis-ci.com/todarch/todarch-td.svg?branch=master)](https://www.travis-ci.com/todarch/todarch-td)
 
 It is todo service for Todarch application.
 

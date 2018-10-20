@@ -1,52 +1,109 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
-jobs:
-  build:
+
+references:
+
+  container_config: &container_config
     docker:
-    # specify the version you desire here
     - image: circleci/openjdk:11-jdk
-
-    # Specify service dependencies here if necessary
-    # CircleCI maintains a library of pre-built images
-    # documented at https://circleci.com/docs/2.0/circleci-images/
-    # - image: circleci/postgres:9.4
-
     working_directory: ~/repo
-
     environment:
-      # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
 
+  restore_repo: &restore_repo
+    restore_cache:
+      keys:
+      - v1-repo-{{ .Branch }}-{{ .Revision }}
+      - v1-repo-{{ .Branch }}
+      - v1-repo
+
+  jars_cache_key: &jars_cache_key
+    v1-dependencies-{{ checksum "pom.xml" }}
+  jars_backup_cache_key: &jars_backup_cache_key
+    v1-dependencies
+
+  restore_jars: &restore_jars
+    restore_cache:
+      keys:
+      - *jars_cache_key
+      - *jars_backup_cache_key
+
+jobs:
+  checkout_code:
+    <<: *container_config
     steps:
+    - *restore_repo
     - checkout
-
-    # Download and cache dependencies
-    - restore_cache:
-        keys:
-        - v2-dependencies-{{ checksum "pom.xml" }}
-        # fallback to using the latest cache if no exact match is found
-        - v2-dependencies-
-
-    - run: mvn dependency:go-offline
-
     - save_cache:
+        key: v1-repo-{{ .Branch }}-{{ .Revision }}
+        paths:
+          - .
+
+  build:
+    <<: *container_config
+    steps:
+    - *restore_repo
+    - *restore_jars
+    - run: mvn -B -DskipTests clean package
+    - save_cache:
+        key: *jars_cache_key
         paths:
         - ~/.m2
-        key: v2-dependencies-{{ checksum "pom.xml" }}
 
-    # run tests!
-    - run: mvn integration-test
+  test:
+    <<: *container_config
+    steps:
+    - *restore_repo
+    - *restore_jars
+    - run: mvn test
+    - store_test_results:
+        path: target/surefire-reports
+
+  deploy:
+    <<: *container_config
+    steps:
+    - *restore_repo
+    - *restore_jars
     - run: cp .mvn/wrapper/settings.xml ~/.m2/settings.xml
     - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
+    - run:
+        name: Setup Environment Variables
+        command: |
+          echo "export TAG_SUFFIX=$(date +%Y%m%d%H%M%S)" >> $BASH_ENV
+          echo 'export IMAGE="todarch/td:${CIRCLE_BRANCH}-${TAG_SUFFIX}"' >> $BASH_ENV
     - run:
         name: Publish Docker image with Jib
         command: |
           ./mvnw compile jib:build -B -DskipTests=true \
+            -Dimage=${IMAGE} \
             -Dbuild.number=${CIRCLE_BUILD_NUM} \
             -Dcommit.hash=${CIRCLE_SHA1} \
             -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
             -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
             -Dbuild.repo=${CIRCLE_PROJECT_REPONAME}
+    - add_ssh_keys:
+        fingerprints:
+          - "80:2d:9c:70:d7:07:3f:fc:25:8d:b1:ed:4b:cd:96:73"
+    - run:
+        name: Deploy app to server via Docker
+        command: |
+          ssh -o StrictHostKeyChecking=no selimssevgi@todarch.com "/bin/bash ./deploy_app.sh ${IMAGE}"
+
+
+workflows:
+  version: 2
+
+  build_test_deploy:
+    jobs:
+    - checkout_code
+    - build:
+        requires:
+        - checkout_code
+    - test:
+        requires:
+        - build
+    - deploy:
+        requires:
+        - test
+        filters:
+          branches:
+            only: master

@@ -8,16 +8,11 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 charset = utf-8
+trim_trailing_whitespace = true
+indent_size = 2
+indent_style = space
 
 [*.java]
-indent_style = space
-indent_size = 2
-
 # idea specific, method chain indentation
 # https://youtrack.jetbrains.com/issue/IDEA-145069
 continuation_indent_size = 4
-
-# 4 space indentation
-[*.xml]
-indent_style = space
-indent_size = 4
