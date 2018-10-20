@@ -70,10 +70,16 @@ jobs:
         command: |
           ./mvnw compile jib:build -B -DskipTests=true \
             -Dbuild.number=${CIRCLE_BUILD_NUM} \
+            -Dproject.version=${CIRCLE_PROJECT_REPONAME} \
             -Dcommit.hash=${CIRCLE_SHA1} \
             -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
             -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
             -Dbuild.repo=${CIRCLE_PROJECT_REPONAME}
+
+  deploy:
+    steps:
+      run: echo "Deploying todarch/td:${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}"
+
 
 workflows:
   version: 2
@@ -90,3 +96,6 @@ workflows:
     - publish_docker_image:
         requires:
         - test
+    - deploy:
+        requires:
+        - publist_docker_image
