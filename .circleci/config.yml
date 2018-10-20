@@ -98,4 +98,4 @@ workflows:
         - test
     - deploy:
         requires:
-        - publist_docker_image
+        - publish_docker_image
