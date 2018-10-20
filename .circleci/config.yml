@@ -70,7 +70,7 @@ jobs:
         command: |
           ./mvnw compile jib:build -B -DskipTests=true \
             -Dbuild.number=${CIRCLE_BUILD_NUM} \
-            -Dproject.version=${CIRCLE_PROJECT_REPONAME} \
+            -Dproject.version=${CIRCLE_BRANCH} \
             -Dcommit.hash=${CIRCLE_SHA1} \
             -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
             -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
@@ -79,7 +79,7 @@ jobs:
   deploy:
     <<: *container_config
     steps:
-    - run: echo "Deploying todarch/td:${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}"
+    - run: echo "Deploying todarch/td:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}"
 
 
 workflows:
