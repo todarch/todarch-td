@@ -1,29 +1,18 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
 version: 2
+
 jobs:
   build:
     docker:
-    # specify the version you desire here
     - image: circleci/openjdk:11-jdk
-
-    # Specify service dependencies here if necessary
-    # CircleCI maintains a library of pre-built images
-    # documented at https://circleci.com/docs/2.0/circleci-images/
-    # - image: circleci/postgres:9.4
 
     working_directory: ~/repo
 
     environment:
-      # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
 
     steps:
     - checkout
 
-    # Download and cache dependencies
     - restore_cache:
         keys:
         - v1-dependencies-{{ checksum "pom.xml" }}
@@ -37,16 +26,30 @@ jobs:
         - ~/.m2
         key: v1-dependencies-{{ checksum "pom.xml" }}
 
-    # run tests!
+  test:
+    working_directory: ~/repo
+    steps:
     - run: mvn integration-test
-    - run: cp .mvn/wrapper/settings.xml ~/.m2/settings.xml
-    - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
-    - run:
-        name: Publish Docker image with Jib
-        command: |
-          ./mvnw compile jib:build -B -DskipTests=true \
-            -Dbuild.number=${CIRCLE_BUILD_NUM} \
-            -Dcommit.hash=${CIRCLE_SHA1} \
-            -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
-            -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
-            -Dbuild.repo=${CIRCLE_PROJECT_REPONAME}
+
+
+#    - run: cp .mvn/wrapper/settings.xml ~/.m2/settings.xml
+#    - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
+#    - run:
+#        name: Publish Docker image with Jib
+#        command: |
+#          ./mvnw compile jib:build -B -DskipTests=true \
+#            -Dbuild.number=${CIRCLE_BUILD_NUM} \
+#            -Dcommit.hash=${CIRCLE_SHA1} \
+#            -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
+#            -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
+#            -Dbuild.repo=${CIRCLE_PROJECT_REPONAME}
+
+workflows:
+  version: 2
+
+  mworkflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
