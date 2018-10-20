@@ -1,60 +1,58 @@
 version: 2
 
+  container_config: &container_config
+    docker:
+    - image: circleci/openjdk:11-jdk
+    working_directory: ~/repo
+    environment:
+      MAVEN_OPTS: -Xmx3200m
+
+  restore_repo: &restore_repo
+    restore_cache:
+      keys:
+      - v1-repo-{{ .Branch }}-{{ .Revision }}
+      - v1-repo-{{ .Branch }}
+      - v1-repo
+
+  jars_cache_key: &jars_cache_key
+    v1-dependencies-{{ checksum "pom.xml" }}
+  jars_backup_cache_key: &jars_backup_cache_key
+    v1-dependencies
+
+  restore_jars: &restore_jars
+    restore_cache:
+      keys:
+      - *jars_cache_key
+      - *jars_backup_cache_key
+
 jobs:
+  checkout_code:
+    <<: *container_config
+    steps:
+    - *restore_repo
+    - checkout
+    - save_cache:
+        key: v1-repo-{{ .Branch }}-{{ .Revision }}
+    paths:
+      - .
+
   build:
-    docker:
-    - image: circleci/openjdk:11-jdk
-
-    working_directory: ~/repo
-
-    environment:
-      MAVEN_OPTS: -Xmx3200m
-
+    <<: *container_config
     steps:
-    - checkout
-
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "pom.xml" }}
-        # fallback to using the latest cache if no exact match is found
-        - v1-dependencies-
-
-    - run: mvn dependency:go-offline
-
-    - save_cache:
-        paths:
-        - ~/.m2
-        key: v1-dependencies-{{ checksum "pom.xml" }}
-
+    - *restore_repo
+    - *restore_jars
     - run: mvn -B -DskipTests clean package
-
-  test: # The job has no executor type specified. The job should have one of the following keys specified: "macos", "machine", "docker"
-    docker:
-    - image: circleci/openjdk:11-jdk
-
-    working_directory: ~/repo
-
-    environment:
-      MAVEN_OPTS: -Xmx3200m
-
-    steps:
-    - checkout
-
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "pom.xml" }}
-        # fallback to using the latest cache if no exact match is found
-        - v1-dependencies-
-
-    - run: mvn dependency:go-offline
-
     - save_cache:
+        key: *jars_cache_key
         paths:
         - ~/.m2
-        key: v1-dependencies-{{ checksum "pom.xml" }}
 
+  test:
+    <<: *container_config
+    steps:
+    - *restore_repo
+    - *restore_jars
     - run: mvn test
-
     - store_test_results:
         path: target/surefire-reports
 
