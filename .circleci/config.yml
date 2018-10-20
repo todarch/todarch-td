@@ -26,6 +26,8 @@ jobs:
         - ~/.m2
         key: v1-dependencies-{{ checksum "pom.xml" }}
 
+    - run: mvn -B -DskipTests clean package
+
   test: # The job has no executor type specified. The job should have one of the following keys specified: "macos", "machine", "docker"
     docker:
     - image: circleci/openjdk:11-jdk
