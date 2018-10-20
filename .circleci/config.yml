@@ -35,8 +35,8 @@ jobs:
     - checkout
     - save_cache:
         key: v1-repo-{{ .Branch }}-{{ .Revision }}
-    paths:
-      - .
+        paths:
+          - .
 
   build:
     <<: *container_config
