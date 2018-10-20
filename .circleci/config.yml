@@ -67,9 +67,11 @@ jobs:
     - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
     - run:
         name: Publish Docker image with Jib
+        # build-number changes for each job, need a global value: use workflow-id
+        # TODO:selimssevgi: rename parameter in parent-pom
         command: |
           ./mvnw compile jib:build -B -DskipTests=true \
-            -Dbuild.number=${CIRCLE_BUILD_NUM} \
+            -Dbuild.number=${CIRCLE_WORKFLOW_ID} \
             -Dproject.version=${CIRCLE_BRANCH} \
             -Dcommit.hash=${CIRCLE_SHA1} \
             -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
@@ -79,7 +81,7 @@ jobs:
   deploy:
     <<: *container_config
     steps:
-    - run: echo "Deploying todarch/td:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}"
+    - run: echo "Deploying todarch/td:${CIRCLE_BRANCH}-${CIRCLE_WORKFLOW_ID}"
 
 
 workflows:
