@@ -117,15 +117,14 @@
     <repositories>
         <repository>
             <id>z-mvn-repo</id>
-            <url>https://rawgit.com/todarch/todarch-mvn-repo/master</url>
+            <url>https://raw.githubusercontent.com/todarch/todarch-mvn-repo/master</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
-
 
 </project>
