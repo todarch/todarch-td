@@ -78,7 +78,7 @@ jobs:
 
   deploy:
     steps:
-      run: echo "Deploying todarch/td:${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}"
+    - run: echo "Deploying todarch/td:${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BUILD_NUM}"
 
 
 workflows:
