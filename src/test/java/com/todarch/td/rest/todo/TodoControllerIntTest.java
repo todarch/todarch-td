@@ -119,4 +119,29 @@ public class TodoControllerIntTest extends BaseIntTest {
     TodoEntity todoEntity = todoRepository.findById(testTodo.id()).orElse(null);
     Assertions.assertThat(todoEntity).isNull();
   }
+
+  @Test
+  public void shouldHandleRsqlQueries() throws Exception {
+    dbHelper.createTestTodo();
+    String validQuery = "todoStatus==INITIAL;priority<10";
+    String queryString = "?q=" + validQuery;
+
+    mockMvc.perform(get("/api/todos/" + queryString)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isNotEmpty());
+  }
+
+  @Test
+  public void shouldHandleInvalidRsqlQueries() throws Exception {
+    dbHelper.createTestTodo();
+    String invalidQuery = "somerandomXX???String542342";
+    String queryString = "?q=" + invalidQuery;
+
+    mockMvc.perform(get("/api/todos/" + queryString)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
+        .andExpect(status().isBadRequest());
+  }
 }
