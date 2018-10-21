@@ -8,6 +8,7 @@ import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDeletionCommand;
 import com.todarch.td.application.model.TodoDto;
+import com.todarch.td.application.todo.TodoQueryManager;
 import com.todarch.td.domain.todo.TodoStatus;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import com.todarch.td.rest.todo.model.NewTodoRes;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.List;
 public class TodoController {
 
   private final TodoManager todoManager;
+  private final TodoQueryManager todoQueryManager;
 
   /**
    * Creates a new td for current user.
@@ -99,4 +102,23 @@ public class TodoController {
     todoManager.delete(tdc);
     return ResponseEntity.noContent().build();
   }
+
+  /**
+   * Handles Rsql queries.
+   *
+   * @param query rsql query string
+   * @return a list of todoitems that matched the query,
+   *         or status 400 (Bad request) if something went wrong while parsing/querying
+   */
+  @GetMapping(path = "/api/todos/")
+  public ResponseEntity<List<TodoDto>> queryInRsql(@RequestParam(value = "q") String query) {
+    try {
+      List<TodoDto> result = todoQueryManager.searchByRsqlQuery(query);
+      return ResponseEntity.status(HttpStatus.OK).body(result);
+    } catch (Exception catchAllEx) {
+      log.error("Could not handle rsql query: {}", query, catchAllEx);
+      return  ResponseEntity.badRequest().build();
+    }
+  }
+
 }
