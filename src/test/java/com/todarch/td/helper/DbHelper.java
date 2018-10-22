@@ -34,8 +34,17 @@ public class DbHelper {
    * @return created td object in detached state.
    */
   public TodoEntity createTodoOf(NewTodoReq newTodoReq) {
+    return createTodoFor(TestUser.ID, newTodoReq);
+  }
+
+  /**
+   * Creates custom td item.
+   *
+   * @return created td object in detached state.
+   */
+  public TodoEntity createTodoFor(Long userId, NewTodoReq newTodoReq) {
     NewTodoCommand newTodoCommand = NewTodoCommand.from(newTodoReq);
-    newTodoCommand.setUserId(TestUser.ID);
+    newTodoCommand.setUserId(userId);
     TodoEntity todoEntity = TodoFactory.from(newTodoCommand);
     newTodoCommand.getTags()
         .forEach(tagName -> todoEntity.addTag(new Tag(TestUser.ID, tagName)));
