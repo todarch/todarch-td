@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TodoQueryManagerIntTest extends ServiceIntTest {
 
@@ -24,23 +25,24 @@ public class TodoQueryManagerIntTest extends ServiceIntTest {
   @Test
   public void shouldFilterByStatus() {
     TodoEntity testTodo = dbHelper.createTestTodo();
+    Long userId = testTodo.userId();
 
     String initialStatusQuery = "todoStatus==INITIAL";
     String doneStatusQuery = "todoStatus==DONE";
 
-    List<TodoDto> initialTodos = todoQueryManager.searchByRsqlQuery(initialStatusQuery);
+    List<TodoDto> initialTodos = todoQueryManager.searchByRsqlQuery(initialStatusQuery, userId);
     Assertions.assertThat(initialTodos).hasSize(1);
 
-    List<TodoDto> doneTodos = todoQueryManager.searchByRsqlQuery(doneStatusQuery);
+    List<TodoDto> doneTodos = todoQueryManager.searchByRsqlQuery(doneStatusQuery, userId);
     Assertions.assertThat(doneTodos).isEmpty();
 
     testTodo.updateStatusTo(TodoStatus.DONE);
     todoRepository.saveAndFlush(testTodo);
 
-    doneTodos = todoQueryManager.searchByRsqlQuery(doneStatusQuery);
+    doneTodos = todoQueryManager.searchByRsqlQuery(doneStatusQuery, userId);
     Assertions.assertThat(doneTodos).hasSize(1);
 
-    initialTodos = todoQueryManager.searchByRsqlQuery(initialStatusQuery);
+    initialTodos = todoQueryManager.searchByRsqlQuery(initialStatusQuery, userId);
     Assertions.assertThat(initialTodos).isEmpty();
   }
 
@@ -48,16 +50,36 @@ public class TodoQueryManagerIntTest extends ServiceIntTest {
   public void higherPriorityNotDoneTodosQuery() {
     NewTodoReq newTodoReq = Requests.newTodoReq();
     newTodoReq.setPriority(4);
-    dbHelper.createTodoOf(newTodoReq);
+    TodoEntity testTodo = dbHelper.createTodoOf(newTodoReq);
 
     String newTasksWithHighPriority = "todoStatus==INITIAL;priority>5";
 
     boolean lowPriority =
-        todoQueryManager.searchByRsqlQuery(newTasksWithHighPriority)
+        todoQueryManager.searchByRsqlQuery(newTasksWithHighPriority, testTodo.userId())
             .stream()
             .map(TodoDto::getPriority)
             .anyMatch(priority -> priority < 5);
 
     Assertions.assertThat(lowPriority).isFalse();
+  }
+
+  @Test
+  public void rsqlQueryShouldWorkOnTodosBelongingToGivenUserId() throws Exception {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+    Long testUserId = testTodo.userId();
+    Long anotherUserId = testUserId + 4;
+    TodoEntity anotherUsersTodo =
+        dbHelper.createTodoFor(anotherUserId, Requests.newTodoReqWithoutTags());
+
+    String initialStatusQuery = "todoStatus==INITIAL";
+    // expected to have a single unique value in these list,
+    // keep it this way to make it more explicit
+    List<Long> userIdsOfTodos =
+        todoQueryManager.searchByRsqlQuery(initialStatusQuery, testUserId)
+        .stream()
+        .map(TodoDto::getUserId)
+        .collect(Collectors.toList());
+
+    Assertions.assertThat(userIdsOfTodos).doesNotContain(anotherUserId);
   }
 }

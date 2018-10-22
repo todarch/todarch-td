@@ -7,6 +7,7 @@ import com.todarch.td.infrastructure.persistence.rsql.CustomRsqlVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,9 @@ public class TodoQueryManager {
    * @param rsqlQuery rsql valid query
    * @return items matching specification constructed of query
    */
-  public List<TodoDto> searchByRsqlQuery(String rsqlQuery) {
-    Node rootNode = new RSQLParser().parse(rsqlQuery);
+  public List<TodoDto> searchByRsqlQuery(String rsqlQuery, @NonNull Long userId) {
+    String userScopedRsql = "userId==" + String.valueOf(userId) + ";" + rsqlQuery;
+    Node rootNode = new RSQLParser().parse(userScopedRsql);
     Specification<TodoEntity> spec = rootNode.accept(new CustomRsqlVisitor<>());
 
     return todoRepository.findAll(spec)

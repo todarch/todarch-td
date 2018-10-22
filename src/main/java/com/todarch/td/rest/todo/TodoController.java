@@ -111,9 +111,11 @@ public class TodoController {
    *         or status 400 (Bad request) if something went wrong while parsing/querying
    */
   @GetMapping(path = "/api/todos/")
-  public ResponseEntity<List<TodoDto>> queryInRsql(@RequestParam(value = "q") String query) {
+  public ResponseEntity<List<TodoDto>> queryCurrentUserTodosInRsql(
+      @RequestParam(value = "q") String query) {
+    Long currentUserId = SecurityUtil.tryToGetUserContext().getUserId();
     try {
-      List<TodoDto> result = todoQueryManager.searchByRsqlQuery(query);
+      List<TodoDto> result = todoQueryManager.searchByRsqlQuery(query, currentUserId);
       return ResponseEntity.status(HttpStatus.OK).body(result);
     } catch (Exception catchAllEx) {
       log.error("Could not handle rsql query: {}", query, catchAllEx);
