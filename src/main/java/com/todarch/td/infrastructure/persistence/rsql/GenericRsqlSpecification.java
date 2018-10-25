@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +98,8 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
         args.add(TodoStatus.valueOf(argument));
       } else if (type.equals(Priority.class)) {
         args.add(Priority.of(Integer.parseInt(argument)));
+      } else if (type.equals(Duration.class)) {
+        args.add(Duration.ofMinutes(Long.parseLong(argument)));
       } else {
         args.add(argument);
       }
