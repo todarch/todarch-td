@@ -94,7 +94,6 @@ public class TodoQueryManagerIntTest extends ServiceIntTest {
     Optional<Long> maxDuration =
         todoQueryManager.searchByRsqlQuery(rsqlQuery, testTodo.userId()).stream()
             .map(TodoDto::getTimeNeededInMin)
-            .filter(duration -> duration < timeLimit)
             .max(Comparator.comparingLong(Long::longValue));
 
     Assertions.assertThat(maxDuration).isNotEmpty();
