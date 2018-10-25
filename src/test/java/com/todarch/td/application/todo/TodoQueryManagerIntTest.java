@@ -11,7 +11,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TodoQueryManagerIntTest extends ServiceIntTest {
@@ -81,5 +83,20 @@ public class TodoQueryManagerIntTest extends ServiceIntTest {
         .collect(Collectors.toList());
 
     Assertions.assertThat(userIdsOfTodos).doesNotContain(anotherUserId);
+  }
+
+  @Test
+  public void rsqlQueryShouldWorkForDurationType() {
+    TodoEntity testTodo = dbHelper.createTestTodo();
+    long timeLimit = testTodo.timeNeededInMin().toMinutes() + 1;
+    String rsqlQuery = "timeNeededInMin=lt=" + String.valueOf(timeLimit);
+
+    Optional<Long> maxDuration =
+        todoQueryManager.searchByRsqlQuery(rsqlQuery, testTodo.userId()).stream()
+            .map(TodoDto::getTimeNeededInMin)
+            .max(Comparator.comparingLong(Long::longValue));
+
+    Assertions.assertThat(maxDuration).isNotEmpty();
+    Assertions.assertThat(maxDuration.get()).isLessThan(timeLimit);
   }
 }
