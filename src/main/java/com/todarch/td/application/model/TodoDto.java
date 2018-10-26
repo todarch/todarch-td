@@ -5,6 +5,7 @@ import com.todarch.td.domain.todo.TodoEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ public class TodoDto {
   private long timeNeededInMin;
   private List<String> tags;
   private Long createdAtEpoch;
+  private Long doneDateEpoch;
 
   /**
    * Maps todoEntity to dto.
@@ -35,6 +37,7 @@ public class TodoDto {
     todoDto.setTimeNeededInMin(todoEntity.timeNeededInMin().toMinutes());
     todoDto.setTags(todoEntity.tags().stream().map(Tag::name).collect(Collectors.toList()));
     todoDto.setCreatedAtEpoch(todoEntity.getCreatedDate().toEpochMilli());
+    todoDto.setDoneDateEpoch(todoEntity.doneDate().orElse(Instant.EPOCH).toEpochMilli());
     return todoDto;
   }
 }
