@@ -22,8 +22,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -64,6 +66,9 @@ public class TodoEntity extends AuditEntity {
       inverseJoinColumns = @JoinColumn(name = "tag_id")
   )
   private Set<Tag> tags = new HashSet<>();
+
+  @Column(name = "done_date", nullable = true)
+  private Instant doneDate;
 
   protected TodoEntity() {
     // this is for jpa
@@ -116,6 +121,10 @@ public class TodoEntity extends AuditEntity {
     return Collections.unmodifiableSet(tags);
   }
 
+  public Optional<Instant> doneDate() {
+    return Optional.ofNullable(doneDate);
+  }
+
   /**
    * Sets time needed to complete the todoItem.
    * We may not set this value, and use zero instead.
@@ -139,6 +148,10 @@ public class TodoEntity extends AuditEntity {
     }
     if (TodoStatus.INITIAL.equals(changeTo)) {
       throw new RuntimeException("cannot change to initial state");
+    }
+
+    if (TodoStatus.DONE.equals(changeTo)) {
+      this.doneDate = Instant.now();
     }
 
     this.todoStatus = changeTo;

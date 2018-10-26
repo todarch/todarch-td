@@ -64,6 +64,14 @@ public class TodoEntityTest {
   }
 
   @Test
+  public void shouldSetDoneDateWhenStatusChangedToDone() {
+    TodoEntity todoEntity = new TodoEntity();
+    Assertions.assertThat(todoEntity.doneDate()).isEmpty();
+    todoEntity.updateStatusTo(TodoStatus.DONE);
+    Assertions.assertThat(todoEntity.doneDate()).isNotEmpty();
+  }
+
+  @Test
   public void useZeroValueDurationIfNotProvided() {
     TodoEntity todoEntity = new TodoEntity();
     todoEntity.setTimeNeededInMin(null);
