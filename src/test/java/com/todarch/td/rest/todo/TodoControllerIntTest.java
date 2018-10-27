@@ -86,6 +86,16 @@ public class TodoControllerIntTest extends BaseIntTest {
   }
 
   @Test
+  public void returnNotFoundWhenCannotGetTodo() throws Exception {
+    long nonexistentTodoId = Long.MAX_VALUE;
+
+    mockMvc.perform(get("/api/todos/" + nonexistentTodoId)
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .header(JwtUtil.AUTH_HEADER, TestUser.PREFIXED_TOKEN))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
   public void getCurrentUserTodos() throws Exception {
     TodoEntity testTodo = dbHelper.createTestTodo();
 

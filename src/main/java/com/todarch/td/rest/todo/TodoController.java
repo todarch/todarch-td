@@ -55,16 +55,34 @@ public class TodoController {
     return ResponseEntity.status(HttpStatus.CREATED).body(newTodoRes);
   }
 
+  /**
+   * Gets all of the td items of current user.
+   *
+   * @return the list of td items for current user.
+   */
   @GetMapping(Endpoints.TODOS)
   public ResponseEntity<List<TodoDto>> currentUserTodos() {
-    List<TodoDto> todos = todoManager.getCurrentUserTodos();
+    Long userId = SecurityUtil.tryToGetUserContext().getUserId();
+    List<TodoDto> todos = todoQueryManager.getAllTodosByUserId(userId);
     return ResponseEntity.ok(todos);
   }
 
+  /**
+   * Gets td item by id and current user id.
+   *
+   * @param todoId resource id
+   * @return td resource if found, or 404 if not found
+   */
   @GetMapping("/api/todos/{todoId}")
-  public ResponseEntity<TodoDto> getTodoById(@PathVariable("todoId") Long todoId) {
-    TodoDto todo = todoManager.getTodoById(todoId);
-    return ResponseEntity.ok(todo);
+  public ResponseEntity<TodoDto> getCurrentUserTodoById(@PathVariable("todoId") Long todoId) {
+    Long userId = SecurityUtil.tryToGetUserContext().getUserId();
+    var optionalTodoDto = todoQueryManager.getUserTodoById(todoId, userId);
+
+    if (optionalTodoDto.isPresent()) {
+      return ResponseEntity.ok(optionalTodoDto.get());
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   /**

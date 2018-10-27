@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +42,34 @@ public class TodoQueryManager {
     Specification<TodoEntity> spec = rootNode.accept(new CustomRsqlVisitor<>());
 
     return todoRepository.findAll(spec)
+        .stream()
+        .map(TodoDto::from)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Looks for a single td item by its id and user id.
+   */
+  public Optional<TodoDto> getUserTodoById(@NonNull Long todoId, Long userId) {
+    String todoByIdQuery = "id==" + String.valueOf(todoId);
+    List<TodoDto> todoDtos = searchByRsqlQuery(todoByIdQuery, userId);
+
+    if (todoDtos.isEmpty()) {
+      return Optional.empty();
+    }
+
+    if (todoDtos.size() > 1) {
+      log.debug("ById search should not return more than one result: {}", todoByIdQuery);
+    }
+
+    return Optional.of(todoDtos.get(0));
+  }
+
+  /**
+   * Gets all of items by a user id.
+   */
+  public List<TodoDto> getAllTodosByUserId(@NonNull Long userId) {
+    return todoRepository.findAllByUserId(userId)
         .stream()
         .map(TodoDto::from)
         .collect(Collectors.toList());
