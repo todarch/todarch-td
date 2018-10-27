@@ -1,7 +1,5 @@
 package com.todarch.td.application;
 
-import com.todarch.security.api.SecurityUtil;
-import com.todarch.security.api.UserContext;
 import com.todarch.td.application.model.ChangeStatusCommand;
 import com.todarch.td.application.model.NewTodoCommand;
 import com.todarch.td.application.model.TodoDeletionCommand;
@@ -17,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -48,24 +44,6 @@ public class TodoManagerImpl implements TodoManager {
     return tagRepository
         .findByUserIdAndName(userId, tagName)
         .orElseGet(() -> tagRepository.save(new Tag(userId, tagName)));
-  }
-
-  @Override
-  public TodoDto getTodoById(@NonNull Long todoId) {
-    TodoEntity todoEntity = todoRepository.findById(todoId)
-        .orElseThrow(() -> new RuntimeException("Todo not found: " + todoId));
-
-    return TodoDto.from(todoEntity);
-  }
-
-  @Override
-  public List<TodoDto> getCurrentUserTodos() {
-    UserContext userContext = SecurityUtil.tryToGetUserContext();
-    Long userId = userContext.getUserId();
-    return todoRepository.findAllByUserId(userId)
-        .stream()
-        .map(TodoDto::from)
-        .collect(Collectors.toList());
   }
 
   @Override
