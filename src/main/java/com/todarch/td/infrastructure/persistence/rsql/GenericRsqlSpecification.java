@@ -1,6 +1,7 @@
 package com.todarch.td.infrastructure.persistence.rsql;
 
 import com.todarch.td.domain.shared.Priority;
+import com.todarch.td.domain.todo.TodoId;
 import com.todarch.td.domain.todo.TodoStatus;
 import cz.jirutka.rsql.parser.ast.ComparisonOperator;
 import cz.jirutka.rsql.parser.ast.RSQLOperators;
@@ -100,6 +101,8 @@ public class GenericRsqlSpecification<T> implements Specification<T> {
         args.add(Priority.of(Integer.parseInt(argument)));
       } else if (type.equals(Duration.class)) {
         args.add(Duration.ofMinutes(Long.parseLong(argument)));
+      } else if (type.equals(TodoId.class)) {
+        args.add(TodoId.of(Long.parseLong(argument)));
       } else {
         args.add(argument);
       }
