@@ -1,6 +1,5 @@
 package com.todarch.td.application.todo;
 
-import com.todarch.td.application.model.TodoDto;
 import com.todarch.td.domain.todo.TodoEntity;
 import com.todarch.td.domain.todo.TodoRepository;
 import com.todarch.td.domain.todo.TodoStatus;

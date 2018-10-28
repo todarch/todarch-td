@@ -1,6 +1,6 @@
 package com.todarch.td.domain.todo;
 
-import com.todarch.td.application.model.NewTodoCommand;
+import com.todarch.td.application.todo.TodoCreationCommand;
 
 public final class TodoFactory {
   private TodoFactory() {
@@ -13,8 +13,8 @@ public final class TodoFactory {
    * @param command data for new td
    * @return constructed td entity
    */
-  public static TodoEntity from(NewTodoCommand command) {
-    TodoEntity todoEntity = new TodoEntity(command.getUserId(), command.getTitle());
+  public static TodoEntity from(TodoCreationCommand command, TodoId todoId) {
+    var todoEntity = new TodoEntity(todoId, command.getUserId(), command.getTitle());
     todoEntity.setDescription(command.getDescription());
     todoEntity.setPriority(command.getPriority());
     todoEntity.setTimeNeededInMin(command.getTimeNeeded());

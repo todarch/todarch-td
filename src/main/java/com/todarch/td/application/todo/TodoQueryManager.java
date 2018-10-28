@@ -1,6 +1,5 @@
 package com.todarch.td.application.todo;
 
-import com.todarch.td.application.model.TodoDto;
 import com.todarch.td.domain.todo.TodoEntity;
 import com.todarch.td.domain.todo.TodoRepository;
 import com.todarch.td.infrastructure.persistence.rsql.CustomRsqlVisitor;
@@ -28,6 +27,8 @@ public class TodoQueryManager {
 
   private final TodoRepository todoRepository;
 
+  private final TodoManagerMapper mapper;
+
   /**
    * Searches items matching the rsql query.
    * https://aboullaite.me/rsql/
@@ -43,7 +44,7 @@ public class TodoQueryManager {
 
     return todoRepository.findAll(spec)
         .stream()
-        .map(TodoDto::from)
+        .map(mapper::toTodoDto)
         .collect(Collectors.toList());
   }
 
@@ -71,7 +72,7 @@ public class TodoQueryManager {
   public List<TodoDto> getAllTodosByUserId(@NonNull Long userId) {
     return todoRepository.findAllByUserId(userId)
         .stream()
-        .map(TodoDto::from)
+        .map(mapper::toTodoDto)
         .collect(Collectors.toList());
   }
 
