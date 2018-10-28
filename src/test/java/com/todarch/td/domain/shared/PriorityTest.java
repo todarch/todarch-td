@@ -23,19 +23,19 @@ public class PriorityTest {
   }
 
   @Test
-  public void shouldNotAcceptHigherValues() {
+  public void shouldAcceptHigherValuesAsMaxPriority() {
     int higherThanMax = Priority.UPPER_LIMIT + 1;
 
-    thrown.expect(IllegalArgumentException.class);
-    Priority.of(higherThanMax);
+    var maxPriority = Priority.of(higherThanMax);
+    Assertions.assertThat(maxPriority).isEqualTo(Priority.MAX);
   }
 
   @Test
-  public void shouldNotAcceptLowerValues() {
+  public void shouldAcceptLowerValuesAsMinPriority() {
     int lowerThanMin = Priority.LOWER_LIMIT - 1;
 
-    thrown.expect(IllegalArgumentException.class);
-    Priority.of(lowerThanMin);
+    var minPriority = Priority.of(lowerThanMin);
+    Assertions.assertThat(minPriority).isEqualTo(Priority.MIN);
   }
 
   @Test

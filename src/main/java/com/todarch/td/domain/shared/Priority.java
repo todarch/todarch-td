@@ -37,16 +37,24 @@ public class Priority implements Comparable<Priority> {
    * @throws IllegalArgumentException when given value is not in the range.
    */
   public static Priority of(int priority) {
-    checkArgument(priority <= UPPER_LIMIT, "Priority cannot be higher than:" + UPPER_LIMIT);
-    checkArgument(priority >= LOWER_LIMIT, "Priority cannot be lower than:" + LOWER_LIMIT);
+    var normalizedPriority = normalize(priority);
 
-    if (cache.containsKey(priority)) {
-      return cache.get(priority);
+    if (cache.containsKey(normalizedPriority)) {
+      return cache.get(normalizedPriority);
     }
 
-    Priority priorityObj = new Priority(priority);
-    cache.put(priority, priorityObj);
+    var priorityObj = new Priority(normalizedPriority);
+    cache.put(normalizedPriority, priorityObj);
     return priorityObj;
+  }
+
+  private static int normalize(int priority) {
+    if (priority < Priority.LOWER_LIMIT) {
+      return Priority.LOWER_LIMIT;
+    } else if (priority > Priority.UPPER_LIMIT) {
+      return Priority.UPPER_LIMIT;
+    }
+    return priority;
   }
 
   public int value() {
