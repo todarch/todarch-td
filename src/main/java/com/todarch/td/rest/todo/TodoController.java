@@ -3,15 +3,17 @@ package com.todarch.td.rest.todo;
 import com.todarch.security.api.SecurityUtil;
 import com.todarch.security.api.UserContext;
 import com.todarch.td.Endpoints;
-import com.todarch.td.application.TodoManager;
-import com.todarch.td.application.model.ChangeStatusCommand;
-import com.todarch.td.application.model.NewTodoCommand;
-import com.todarch.td.application.model.TodoDeletionCommand;
-import com.todarch.td.application.model.TodoDto;
+import com.todarch.td.application.todo.StatusChangeCommand;
+import com.todarch.td.application.todo.TodoDeletionCommand;
+import com.todarch.td.application.todo.TodoDto;
+import com.todarch.td.application.todo.TodoCommandManager;
+import com.todarch.td.application.todo.TodoManagerMapper;
 import com.todarch.td.application.todo.TodoQueryManager;
+import com.todarch.td.domain.todo.TodoId;
 import com.todarch.td.domain.todo.TodoStatus;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import com.todarch.td.rest.todo.model.NewTodoRes;
+import com.todarch.td.rest.todo.model.TodoFullUpdateReq;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,8 +34,9 @@ import java.util.List;
 @Slf4j
 public class TodoController {
 
-  private final TodoManager todoManager;
+  private final TodoCommandManager todoCommandManager;
   private final TodoQueryManager todoQueryManager;
+  private final TodoManagerMapper todoManagerMapper;
 
   /**
    * Creates a new td for current user.
@@ -44,10 +47,9 @@ public class TodoController {
     UserContext userContext = SecurityUtil.tryToGetUserContext();
     Long userId = userContext.getUserId();
 
-    NewTodoCommand newTodoCommand = NewTodoCommand.from(newTodoReq);
-    newTodoCommand.setUserId(userId);
+    var newTodoCommand = todoManagerMapper.toNewTodoCommand(newTodoReq, userId);
 
-    Long newTodoId = todoManager.createTodo(newTodoCommand);
+    Long newTodoId = todoCommandManager.createTodo(newTodoCommand);
 
     NewTodoRes newTodoRes = new NewTodoRes();
     newTodoRes.setId(newTodoId);
@@ -90,19 +92,18 @@ public class TodoController {
    *
    * @param todoId id to operate on
    * @param action appropriate status to change to
-   * @return updated resource
    */
   @PutMapping("/api/todos/{todoId}/{action}")
-  public ResponseEntity<TodoDto> changeTodoStatus(
+  public ResponseEntity<Object> changeTodoStatus(
       @PathVariable("todoId") Long todoId,
       @PathVariable("action") String action) {
-    ChangeStatusCommand csc = new ChangeStatusCommand();
+    StatusChangeCommand csc = new StatusChangeCommand();
     csc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
-    csc.setTodoId(todoId);
+    csc.setTodoId(TodoId.of(todoId));
     csc.setChangeTo(TodoStatus.toTodoStatus(action));
 
-    TodoDto updatedTodo = todoManager.changeStatus(csc);
-    return ResponseEntity.ok(updatedTodo);
+    todoCommandManager.changeStatus(csc);
+    return ResponseEntity.noContent().build();
   }
 
   /**
@@ -115,9 +116,30 @@ public class TodoController {
   public ResponseEntity<Object> deleteTodo(@PathVariable("todoId") Long todoId) {
     TodoDeletionCommand tdc = new TodoDeletionCommand();
     tdc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
-    tdc.setTodoId(todoId);
+    tdc.setTodoId(TodoId.of(todoId));
 
-    todoManager.delete(tdc);
+    todoCommandManager.delete(tdc);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Updates the resource fully with new values.
+   *  @param todoId resource id
+   * @param todoFullUpdateReq combination of new and unchanged values.
+   */
+  @PutMapping("/api/todos/{todoId}")
+  public ResponseEntity<Object> updateTodoFully(@PathVariable("todoId") Long todoId,
+                                                @RequestBody TodoFullUpdateReq todoFullUpdateReq) {
+
+    Long userId = SecurityUtil.tryToGetUserContext().getUserId();
+    var todoFullUpdateCommand =
+        todoManagerMapper.toTodoFullUpdateCommand(
+            todoFullUpdateReq,
+            userId,
+            TodoId.of(todoId));
+
+    todoCommandManager.updateTodoFully(todoFullUpdateCommand);
+
     return ResponseEntity.noContent().build();
   }
 

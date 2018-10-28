@@ -1,41 +1,30 @@
 package com.todarch.td.domain.todo;
 
+import com.todarch.td.application.todo.TodoFullUpdateCommand;
 import com.todarch.td.domain.shared.Priority;
-import com.todarch.td.domain.tag.Tag;
 import com.todarch.td.infrastructure.persistence.AuditEntity;
 import com.todarch.td.infrastructure.persistence.converter.MinDurationConverter;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Entity
 @Table(name = "TODOS")
 @Setter(AccessLevel.PROTECTED)
 public class TodoEntity extends AuditEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @EmbeddedId
+  private TodoId id;
 
   @Column(nullable = false)
   private Long userId;
@@ -57,15 +46,8 @@ public class TodoEntity extends AuditEntity {
   @Convert(converter = MinDurationConverter.class)
   private Duration timeNeededInMin;
 
-  @ManyToMany(
-      cascade = { CascadeType.PERSIST, CascadeType.MERGE },
-      fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "todo_tag",
-      joinColumns = @JoinColumn(name = "todo_id"),
-      inverseJoinColumns = @JoinColumn(name = "tag_id")
-  )
-  private Set<Tag> tags = new HashSet<>();
+  // if there is no such thing as td, there is no meaning to TagEntity.
+  // if there is no such thing as TagEntity, there is meaning to td.
 
   @Column(name = "done_date", nullable = true)
   private Instant doneDate;
@@ -80,7 +62,10 @@ public class TodoEntity extends AuditEntity {
    * @param userId owner of the todoItem
    * @param title title of the item
    */
-  TodoEntity(@NonNull Long userId, @NonNull String title) {
+  TodoEntity(@NonNull TodoId todoId,
+             @NonNull Long userId,
+             @NonNull String title) {
+    this.id = todoId;
     this.userId = userId;
     this.title = title;
     this.priority = Priority.DEFAULT;
@@ -89,7 +74,7 @@ public class TodoEntity extends AuditEntity {
     this.todoStatus = TodoStatus.INITIAL;
   }
 
-  public Long id() {
+  public TodoId id() {
     return id;
   }
 
@@ -115,10 +100,6 @@ public class TodoEntity extends AuditEntity {
 
   public Duration timeNeededInMin() {
     return timeNeededInMin;
-  }
-
-  public Set<Tag> tags() {
-    return Collections.unmodifiableSet(tags);
   }
 
   public Optional<Instant> doneDate() {
@@ -157,12 +138,18 @@ public class TodoEntity extends AuditEntity {
     this.todoStatus = changeTo;
   }
 
-  private boolean isDone() {
-    return TodoStatus.DONE.equals(todoStatus);
+  /**
+   * Updates the values all together.
+   */
+  public void updateWith(TodoFullUpdateCommand cmd) {
+    this.timeNeededInMin = cmd.getTimeNeeded();
+    this.title = cmd.getTitle();
+    this.description = cmd.getDescription();
+    this.priority = cmd.getPriority();
   }
 
-  public void addTag(@NonNull Tag tag) {
-    tags.add(tag);
+  private boolean isDone() {
+    return TodoStatus.DONE.equals(todoStatus);
   }
 
   public boolean canBeDeletedBy(@NonNull Long userId) {

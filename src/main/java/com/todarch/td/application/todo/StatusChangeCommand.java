@@ -1,13 +1,14 @@
-package com.todarch.td.application.model;
+package com.todarch.td.application.todo;
 
+import com.todarch.td.domain.todo.TodoId;
 import com.todarch.td.domain.todo.TodoStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class ChangeStatusCommand {
+public class StatusChangeCommand {
   private Long userId;
-  private Long todoId;
+  private TodoId todoId;
   private TodoStatus changeTo;
 }
