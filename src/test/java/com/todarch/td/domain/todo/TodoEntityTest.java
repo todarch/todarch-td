@@ -24,12 +24,11 @@ public class TodoEntityTest {
 
   @Test
   public void shouldBeInitializedWithDefaultValues() {
-    TodoEntity todoEntity = new TodoEntity(TestUser.ID, TestTodo.TITLE);
+    TodoEntity todoEntity = new TodoEntity(TestTodo.ID, TestUser.ID, TestTodo.TITLE);
 
     Assertions.assertThat(todoEntity.description()).isEmpty();
     Assertions.assertThat(todoEntity.timeNeededInMin()).isEqualTo(Duration.ZERO);
     Assertions.assertThat(todoEntity.priority()).isEqualTo(Priority.DEFAULT);
-    Assertions.assertThat(todoEntity.tags()).isEmpty();
     Assertions.assertThat(todoEntity.status()).isEqualTo(TodoStatus.INITIAL);
   }
 
