@@ -12,13 +12,6 @@ import java.util.Optional;
 @Repository
 public interface TagRepository extends JpaRepository<TagEntity, TagId> {
 
-  @Query(value = "SELECT tag_seq.nextval FROM dual", nativeQuery = true)
-  Long getNextSeriesId();
-
-  default TagId nextId() {
-    return TagId.of(getNextSeriesId());
-  }
-
   /**
    * Different users can have same tags.
    * Neither of the values is unique for its column,
