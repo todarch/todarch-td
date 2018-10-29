@@ -2,6 +2,7 @@ package com.todarch.td.application.tag;
 
 import com.todarch.td.domain.shared.Tag;
 import com.todarch.td.domain.tag.TagEntity;
+import com.todarch.td.domain.tag.TagIdGenerator;
 import com.todarch.td.domain.tag.TagRepository;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -23,6 +23,8 @@ import java.util.function.Predicate;
 public class TagCommandManager {
 
   private final TagRepository tagRepository;
+
+  private final TagIdGenerator tagIdGenerator;
 
   /**
    * Tags a td item with given tag names.
@@ -57,6 +59,6 @@ public class TagCommandManager {
   }
 
   private TagEntity newTagEntity(Long userId, Tag tag) {
-    return new TagEntity(tagRepository.nextId(), userId, tag);
+    return new TagEntity(tagIdGenerator.next(), userId, tag);
   }
 }

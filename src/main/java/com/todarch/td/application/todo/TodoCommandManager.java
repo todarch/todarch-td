@@ -5,6 +5,7 @@ import com.todarch.td.application.tag.TagTodoCommand;
 import com.todarch.td.domain.todo.TodoEntity;
 import com.todarch.td.domain.todo.TodoFactory;
 import com.todarch.td.domain.todo.TodoId;
+import com.todarch.td.domain.todo.TodoIdGenerator;
 import com.todarch.td.domain.todo.TodoRepository;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -20,7 +21,10 @@ public class TodoCommandManager {
 
   private final TodoRepository todoRepository;
 
+  private final TodoIdGenerator todoIdGenerator;
+
   private final TagCommandManager tagCommandManager;
+
 
   /**
    * Creates a new td with given and other default values, including tags if exist.
@@ -30,7 +34,7 @@ public class TodoCommandManager {
   @Transactional
   public Long createTodo(@NonNull TodoCreationCommand todoCreationCommand) {
     Long userId = todoCreationCommand.getUserId();
-    TodoEntity newTodo = TodoFactory.from(todoCreationCommand, todoRepository.nextId());
+    TodoEntity newTodo = TodoFactory.from(todoCreationCommand, todoIdGenerator.next());
     TodoEntity savedTodo = todoRepository.save(newTodo);
     log.info("Saved todo with id of {}", savedTodo.id());
 
