@@ -104,7 +104,7 @@
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-verifier</artifactId>
+      <artifactId>spring-cloud-starter-contract-verifier</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -120,6 +120,9 @@
         <artifactId>spring-cloud-contract-maven-plugin</artifactId>
         <version>2.0.2.RELEASE</version>
         <extensions>true</extensions> <!-- adds extra functionality to our build -->
+        <configuration>
+          <baseClassForTests>com.todarch.td.GolangCliBaseTest</baseClassForTests>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

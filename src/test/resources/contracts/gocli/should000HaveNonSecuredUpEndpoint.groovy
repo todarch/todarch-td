@@ -4,17 +4,14 @@ import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
   request {
-    method 'GET'
+    method GET()
     url '/non-secured/up'
-    headers {
-      contentType applicationJson()
-    }
   }
 
   response {
-    status 200
+    status OK()
     headers {
-      contentType applicationJson()
+      contentType textPlain()
     }
   }
 }
