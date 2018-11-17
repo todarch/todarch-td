@@ -23,6 +23,12 @@
     <todarch.security.version>0.0.1-SNAPSHOT</todarch.security.version>
     <todarch.common.version>1.0-SNAPSHOT</todarch.common.version>
     <postgresql.version>42.2.4</postgresql.version>
+
+    <scc.http.baseClass>com.todarch.td.BaseContractTestHttp</scc.http.baseClass>
+    <!--<scc.messaging.baseClass>com.todarch.td.BaseContractTestMessaging</scc.messaging.baseClass>-->
+    <!-- override to LOCAL on development -->
+    <!--<scc.contracts.mode>LOCAL</scc.contracts.mode>-->
+    <scc.contracts.mode>REMOTE</scc.contracts.mode>
   </properties>
 
   <dependencies>
@@ -118,11 +124,6 @@
       <plugin>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-contract-maven-plugin</artifactId>
-        <version>2.0.2.RELEASE</version>
-        <extensions>true</extensions> <!-- adds extra functionality to our build -->
-        <configuration>
-          <baseClassForTests>com.todarch.td.GolangCliBaseTest</baseClassForTests>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -7,6 +7,7 @@ import java.time.Instant;
 
 public class TestTodo {
   public static final String TITLE = "TestTodoTitle";
+  public static final String DESC = "TestTodoDesc";
   public static final TodoId ID = TodoId.of(63L);
   public static final Priority PRIORITY = Priority.DEFAULT;
 
