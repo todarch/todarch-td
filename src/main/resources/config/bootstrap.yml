@@ -1,11 +1,10 @@
 spring:
   application:
     name: td
+  profiles:
+    active: dev
   cloud:
     config:
-      uri: https://todarch-cs.herokuapp.com
+      uri: http://localhost:7001
       fail-fast: true
-
-server:
-  port: 6364
 
