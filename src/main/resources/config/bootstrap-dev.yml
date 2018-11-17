@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    config:
+      uri: http://localhost:7001
+      fail-fast: true
+
+server:
+  port: 7003
