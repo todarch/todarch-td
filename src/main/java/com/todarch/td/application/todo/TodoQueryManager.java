@@ -1,5 +1,7 @@
 package com.todarch.td.application.todo;
 
+import com.todarch.td.application.tag.TagDto;
+import com.todarch.td.application.tag.TagQueryManager;
 import com.todarch.td.domain.todo.TodoEntity;
 import com.todarch.td.domain.todo.TodoRepository;
 import com.todarch.td.infrastructure.persistence.rsql.CustomRsqlVisitor;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +32,8 @@ public class TodoQueryManager {
 
   private final TodoManagerMapper mapper;
 
+  private final TagQueryManager tagQueryManager;
+
   /**
    * Searches items matching the rsql query.
    * https://aboullaite.me/rsql/
@@ -42,10 +47,25 @@ public class TodoQueryManager {
     Node rootNode = new RSQLParser().parse(userScopedRsql);
     Specification<TodoEntity> spec = rootNode.accept(new CustomRsqlVisitor<>());
 
-    return todoRepository.findAll(spec)
-        .stream()
-        .map(mapper::toTodoDto)
-        .collect(Collectors.toList());
+    List<TodoEntity> all = todoRepository.findAll(spec);
+    return toTodoDtos(all);
+  }
+
+  private List<TodoDto> toTodoDtos(List<TodoEntity> todos) {
+    var todoDtos = new ArrayList<TodoDto>(todos.size());
+
+    for (TodoEntity todo : todos) {
+      TodoDto todoDto = mapper.toTodoDto(todo);
+      List<String> todoTagNames =
+          tagQueryManager.tagsFor(todo.id())
+              .stream()
+              .map(TagDto::getName)
+              .collect(Collectors.toList());
+      todoDto.setTags(todoTagNames);
+      todoDtos.add(todoDto);
+    }
+
+    return todoDtos;
   }
 
   /**
@@ -70,10 +90,8 @@ public class TodoQueryManager {
    * Gets all of items by a user id.
    */
   public List<TodoDto> getAllTodosByUserId(@NonNull Long userId) {
-    return todoRepository.findAllByUserId(userId)
-        .stream()
-        .map(mapper::toTodoDto)
-        .collect(Collectors.toList());
+    List<TodoEntity> allByUserId = todoRepository.findAllByUserId(userId);
+    return toTodoDtos(allByUserId);
   }
 
 }

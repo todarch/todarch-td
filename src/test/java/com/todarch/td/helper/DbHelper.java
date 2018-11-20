@@ -1,6 +1,7 @@
 package com.todarch.td.helper;
 
 import com.todarch.td.application.todo.TodoManagerMapper;
+import com.todarch.td.domain.shared.Tag;
 import com.todarch.td.domain.tag.TagEntity;
 import com.todarch.td.domain.tag.TagRepository;
 import com.todarch.td.domain.tag.TodoTagRepository;
@@ -52,6 +53,9 @@ public class DbHelper {
   public TodoEntity createTodoFor(Long userId, NewTodoReq newTodoReq) {
     var newTodoCommand = todoManagerMapper.toNewTodoCommand(newTodoReq, userId);
     TodoEntity todoEntity = TodoFactory.from(newTodoCommand, TestTodo.nextId());
+    var testTag = new TagEntity(TestTag.nextId(), userId, Tag.of("testTag"));
+    testTag.assignTo(todoEntity.id());
+    tagRepository.saveAndFlush(testTag);
     return todoRepository.saveAndFlush(todoEntity);
   }
 
