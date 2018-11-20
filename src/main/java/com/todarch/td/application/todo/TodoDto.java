@@ -2,6 +2,8 @@ package com.todarch.td.application.todo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class TodoDto {
   private long id;
@@ -13,4 +15,5 @@ public class TodoDto {
   private long timeNeededInMin;
   private Long createdAtEpoch;
   private Long doneDateEpoch;
+  private List<String> tags;
 }
