@@ -1,7 +1,7 @@
 package com.todarch.td.rest.todo;
 
-import com.todarch.security.api.SecurityUtil;
-import com.todarch.security.api.UserContext;
+// import com.todarch.security.api.SecurityUtil;
+// import com.todarch.security.api.UserContext;
 import com.todarch.td.Endpoints;
 import com.todarch.td.application.todo.StatusChangeCommand;
 import com.todarch.td.application.todo.TodoDeletionCommand;
@@ -44,8 +44,8 @@ public class TodoController {
    */
   @PostMapping(Endpoints.TODOS)
   public ResponseEntity<NewTodoRes> createTodo(@RequestBody NewTodoReq newTodoReq) {
-    UserContext userContext = SecurityUtil.tryToGetUserContext();
-    Long userId = userContext.getUserId();
+    // UserContext userContext = SecurityUtil.tryToGetUserContext();
+    Long userId = 10L; //userContext.getUserId();
 
     var newTodoCommand = todoManagerMapper.toNewTodoCommand(newTodoReq, userId);
 
@@ -64,7 +64,7 @@ public class TodoController {
    */
   @GetMapping(Endpoints.TODOS)
   public ResponseEntity<List<TodoDto>> currentUserTodos() {
-    Long userId = SecurityUtil.tryToGetUserContext().getUserId();
+    Long userId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
     List<TodoDto> todos = todoQueryManager.getAllTodosByUserId(userId);
     return ResponseEntity.ok(todos);
   }
@@ -77,7 +77,7 @@ public class TodoController {
    */
   @GetMapping("/api/todos/{todoId}")
   public ResponseEntity<TodoDto> getCurrentUserTodoById(@PathVariable("todoId") Long todoId) {
-    Long userId = SecurityUtil.tryToGetUserContext().getUserId();
+    Long userId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
     var optionalTodoDto = todoQueryManager.getUserTodoById(todoId, userId);
 
     if (optionalTodoDto.isPresent()) {
@@ -98,7 +98,7 @@ public class TodoController {
       @PathVariable("todoId") Long todoId,
       @PathVariable("action") String action) {
     StatusChangeCommand csc = new StatusChangeCommand();
-    csc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
+    // csc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
     csc.setTodoId(TodoId.of(todoId));
     csc.setChangeTo(TodoStatus.toTodoStatus(action));
 
@@ -115,7 +115,7 @@ public class TodoController {
   @DeleteMapping("/api/todos/{todoId}")
   public ResponseEntity<Object> deleteTodo(@PathVariable("todoId") Long todoId) {
     TodoDeletionCommand tdc = new TodoDeletionCommand();
-    tdc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
+    // tdc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
     tdc.setTodoId(TodoId.of(todoId));
 
     todoCommandManager.delete(tdc);
@@ -131,7 +131,7 @@ public class TodoController {
   public ResponseEntity<Object> updateTodoFully(@PathVariable("todoId") Long todoId,
                                                 @RequestBody TodoFullUpdateReq todoFullUpdateReq) {
 
-    Long userId = SecurityUtil.tryToGetUserContext().getUserId();
+    Long userId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
     var todoFullUpdateCommand =
         todoManagerMapper.toTodoFullUpdateCommand(
             todoFullUpdateReq,
@@ -153,7 +153,7 @@ public class TodoController {
   @GetMapping(path = "/api/todos/")
   public ResponseEntity<List<TodoDto>> queryCurrentUserTodosInRsql(
       @RequestParam(value = "q") String query) {
-    Long currentUserId = SecurityUtil.tryToGetUserContext().getUserId();
+    Long currentUserId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
     try {
       List<TodoDto> result = todoQueryManager.searchByRsqlQuery(query, currentUserId);
       return ResponseEntity.status(HttpStatus.OK).body(result);
