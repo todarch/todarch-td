@@ -1,0 +1,70 @@
+plugins {
+  id 'org.springframework.boot' version '2.2.6.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+  id 'java'
+  id 'com.google.cloud.tools.jib' version '2.1.0'
+}
+
+group = 'com.todarch'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+configurations {
+  developmentOnly
+  runtimeClasspath {
+    extendsFrom developmentOnly
+  }
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.flywaydb:flyway-core'
+
+  runtimeOnly 'com.h2database:h2'
+  runtimeOnly 'org.postgresql:postgresql'
+
+  implementation 'io.springfox:springfox-swagger2:2.9.2'
+  implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+  compile 'cz.jirutka.rsql:rsql-parser:2.1.0'
+
+  compileOnly 'org.projectlombok:lombok'
+
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  annotationProcessor 'org.projectlombok:lombok'
+  testImplementation('org.springframework.boot:spring-boot-starter-test') {
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
+}
+
+test {
+  useJUnitPlatform()
+}
+
+jib {
+  to {
+    image = System.getenv('IMAGE') ?: 'todarch/td:latest'
+    auth {
+      username = System.getenv('TD_DOCKER_USER')
+      password = System.getenv('TD_DOCKER_PASSWORD')
+    }
+  }
+  container {
+    environment = [
+      'IMAGE': System.getenv('IMAGE') ?: 'local-build',
+      'WORKFLOW_ID': System.getenv('CIRCLE_WORKFLOW_ID') ?: 'local-build',
+      'COMMIT_USER': System.getenv('CIRCLE_PROJECT_USERNAME') ?: 'local-build',
+      'COMMIT_REPO': System.getenv('CIRCLE_PROJECT_REPONAME') ?: 'local-build',
+      'COMMIT_HASH': System.getenv('CIRCLE_SHA1') ?: 'local-build'
+    ]
+  }
+}
