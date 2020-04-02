@@ -1,7 +1,0 @@
-language: java
-
-jdk:
-  - openjdk11
-
-# Could not transfer artifact xyz from/to central (xyz): Access denied to: xyz
-sudo: required
