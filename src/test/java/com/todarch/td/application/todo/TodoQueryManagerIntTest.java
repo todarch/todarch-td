@@ -7,7 +7,7 @@ import com.todarch.td.helper.Requests;
 import com.todarch.td.helper.ServiceIntTest;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Comparator;

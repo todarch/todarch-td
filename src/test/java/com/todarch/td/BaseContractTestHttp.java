@@ -7,9 +7,6 @@ import com.todarch.td.domain.todo.TodoStatus;
 import com.todarch.td.helper.TestTodo;
 import com.todarch.td.helper.TestUser;
 import cz.jirutka.rsql.parser.RSQLParserException;
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
  *
  * @author selimssevgi
  */
-@RunWith(SpringRunner.class)
+// @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TdApplication.class)
 @AutoConfigureMockMvc
 public abstract class BaseContractTestHttp {
@@ -47,11 +44,11 @@ public abstract class BaseContractTestHttp {
   /**
    * Populates test database with the test td item.
    */
-  @Before
+  // @Before
   public void setup() {
     mockTodoCommandManager();
     mockTodoQueryManager();
-    RestAssuredMockMvc.mockMvc(mockMvc);
+    // RestAssuredMockMvc.mockMvc(mockMvc);
   }
 
   private void mockTodoQueryManager() {

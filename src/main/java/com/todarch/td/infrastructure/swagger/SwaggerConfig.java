@@ -39,7 +39,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
   private ApiInfo metaData() {
     return new ApiInfoBuilder()
         .title("Todarch Todo Service API")
-        .description("\"Response for managing todo items\"")
+        .description("\"Responsible for managing todo items\"")
         .version("0.0.1")
         .license("Apache License Version 2.0")
         .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")

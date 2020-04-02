@@ -4,7 +4,7 @@ import com.todarch.td.domain.shared.Tag;
 import com.todarch.td.helper.TestTag;
 import com.todarch.td.helper.TestTodo;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TagEntityTest {
 

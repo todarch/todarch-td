@@ -1,11 +1,9 @@
 package com.todarch.td.domain.tag;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
+// @RunWith(JUnit4.class)
 public class TagIdTest {
 
   @Test
