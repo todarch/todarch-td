@@ -1,3 +1,0 @@
-spring.cloud.config.enabled: false
-
-todarch.healtcheck.endpoints.enabled: true
