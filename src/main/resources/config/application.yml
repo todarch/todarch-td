@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: todarch-td
+  profiles:
+    active: dev
+  datasource:
+    url: "${JDBC_DATABASE_URL}"
+    username: "${JDBC_DATABASE_USERNAME}"
+    password: "${JDBC_DATABASE_PASSWORD}"
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: "${spring.flyway.schemas}"
+        jdbc.lob.non_contextual_creation: true # fixes clob creation exception
+  flyway:
+    schemas: todarch
+
+info:
+  app:
+    build:
+      registry: "https://hub.docker.com/r/todarch/td/tags?page=1&ordering=last_updated"
+      image: "${IMAGE}"
+      pipeline: "https://circleci.com/workflow-run/${WORKFLOW_ID}"
+      repo: "https://github.com/${COMMIT_USER}/${COMMIT_REPO}/commit/${COMMIT_HASH}"
+

@@ -4,7 +4,7 @@ import com.todarch.td.domain.tag.TagRepository;
 import com.todarch.td.helper.ServiceIntTest;
 import com.todarch.td.helper.TestTodo;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TagQueryManagerIntTest extends ServiceIntTest {

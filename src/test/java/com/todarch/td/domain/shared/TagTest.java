@@ -1,26 +1,18 @@
 package com.todarch.td.domain.shared;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
+// @RunWith(JUnit4.class)
 public class TagTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void shouldNotAcceptNull() {
-    thrown.expect(NullPointerException.class);
-    Tag.of(null);
+    Assertions.catchThrowableOfType(() -> Tag.of(null), NullPointerException.class);
   }
 
   @Test

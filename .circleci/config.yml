@@ -17,7 +17,7 @@ references:
       - v1-repo
 
   jars_cache_key: &jars_cache_key
-    v1-dependencies-{{ checksum "pom.xml" }}
+    v1-dependencies-{{ checksum "build.gradle" }}
   jars_backup_cache_key: &jars_backup_cache_key
     v1-dependencies
 
@@ -43,28 +43,26 @@ jobs:
     steps:
     - *restore_repo
     - *restore_jars
-    - run: mvn -B -DskipTests clean package
+    - run: ./gradlew build -x test
     - save_cache:
         key: *jars_cache_key
         paths:
-        - ~/.m2
+        - ~/.gradle
 
   test:
     <<: *container_config
     steps:
     - *restore_repo
     - *restore_jars
-    - run: mvn test
+    - run: ./gradlew test
     - store_test_results:
-        path: target/surefire-reports
+        path: build/test-results
 
   deploy:
     <<: *container_config
     steps:
     - *restore_repo
     - *restore_jars
-    - run: cp .mvn/wrapper/settings.xml ~/.m2/settings.xml
-    - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
     - run:
         name: Setup Environment Variables
         command: |
@@ -72,21 +70,15 @@ jobs:
           echo 'export IMAGE="todarch/td:${CIRCLE_BRANCH}-${TAG_SUFFIX}"' >> $BASH_ENV
     - run:
         name: Publish Docker image with Jib
-        command: |
-          ./mvnw compile jib:build -B -DskipTests=true \
-            -Dimage=${IMAGE} \
-            -Dbuild.number=${CIRCLE_BUILD_NUM} \
-            -Dcommit.hash=${CIRCLE_SHA1} \
-            -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
-            -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
-            -Dbuild.repo=${CIRCLE_PROJECT_REPONAME}
+        command: | # DOCKER_USER/PASS is picked up from Syste.getenv
+          ./gradlew jib -x test
     - add_ssh_keys:
         fingerprints:
-          - "80:2d:9c:70:d7:07:3f:fc:25:8d:b1:ed:4b:cd:96:73"
+          - "3a:a8:c9:72:2b:bd:11:2c:5d:a8:44:84:1c:8c:7d:4f"
     - run:
         name: Deploy app to server via Docker
         command: |
-          ssh -o StrictHostKeyChecking=no selimssevgi@todarch.com "/bin/bash ./deploy_app.sh ${IMAGE}"
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "/bin/bash ./deploy_app ${IMAGE}"
 
 
 workflows:
@@ -102,6 +94,7 @@ workflows:
         requires:
         - build
     - deploy:
+        context: todarch-global-ctx
         requires:
         - test
         filters:

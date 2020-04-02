@@ -1,21 +1,17 @@
 package com.todarch.td.domain.shared;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
+// @RunWith(JUnit4.class)
 public class PriorityTest {
 
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
+  // @Rule
+  // public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public void shouldProvideStaticFactoryMethod() {

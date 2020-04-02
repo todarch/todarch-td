@@ -5,14 +5,14 @@ import com.todarch.td.helper.RepositoryTest;
 import com.todarch.td.helper.TestTag;
 import com.todarch.td.helper.TestTodo;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.PersistenceException;
 
 import java.util.List;
 
-import static org.junit.Assert.fail;
+// import static org.junit.Assert.fail;
 
 public class TagRepositoryTest extends RepositoryTest {
 
@@ -26,7 +26,7 @@ public class TagRepositoryTest extends RepositoryTest {
     tem.persistAndFlush(tag);
     try {
       tem.persistAndFlush(sameTag);
-      fail("User id and tag name together must be unique.");
+      // fail("User id and tag name together must be unique.");
     } catch (PersistenceException ignore) {
       //
     }

@@ -8,7 +8,7 @@ import com.todarch.td.helper.TestTag;
 import com.todarch.td.helper.TestTodo;
 import com.todarch.td.helper.TestUser;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;

@@ -8,28 +8,19 @@ It is todo service for Todarch application.
 
 - Refer to [documentation repo](https://github.com/todarch/todarch-docs) to see how whole system works together.
 
-## Contract Tests
-
-- Just generate the tests from contracts if contracts are updated.
+### docker
 
 ```shell
-mvn spring-cloud-contract:generateTests
+# dockerize but do not publish
+./gradlew jibDockerBuild
+# export IMAGE=xyz/xyzx; ./gradlew jibDockerBuild
+docker images | grep td
 ```
 
-- if working on contracts locally, you have to do the following steps before generating tests:
-
-1. grab the todarch-cdc for new contracts if working in local
+- run locally
 
 ```shell
-cd todarch-cdc
-# make changes or create new constracts
-mvn clean install
+docker images | grep td
+docker run -rm -p 7003:7003 todard/td
 ```
-
-2. change contracts mode to LOCAL, so the jar in local repo will be picked up by spring cloud
-
-```xml
-<scc.contracts.mode>LOCAL</scc.contracts.mode>
-```
-
 
