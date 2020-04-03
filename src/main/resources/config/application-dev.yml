@@ -5,3 +5,6 @@ spring:
     url: "${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5445/admin}"
     username: "admin"
     password: "admin"
+
+keycloak:
+  auth-server-url: ${AUTH_SERVER_URL:http://localhost:7006/auth}
