@@ -24,3 +24,18 @@ info:
       pipeline: "https://circleci.com/workflow-run/${WORKFLOW_ID}"
       repo: "https://github.com/${COMMIT_USER}/${COMMIT_REPO}/commit/${COMMIT_HASH}"
 
+keycloak:
+  realm: todarch
+  #  realmKey: MIIBIjANBgkqh[etc...]?
+  auth-server-url: ${AUTH_SERVER_URL}
+  public-client: true
+  resource: todarch-app
+  bearer-only: true
+  ssl-required: none
+  security-constraints:
+    - authRoles:
+        - user
+      securityCollections:
+        - patterns:
+            - /api/*
+

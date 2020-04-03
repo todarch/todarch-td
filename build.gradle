@@ -37,6 +37,8 @@ dependencies {
   implementation 'io.springfox:springfox-swagger-ui:2.9.2'
   compile 'cz.jirutka.rsql:rsql-parser:2.1.0'
 
+  compile 'org.keycloak:keycloak-spring-boot-starter:9.0.0'
+
   compileOnly 'org.projectlombok:lombok'
 
   developmentOnly 'org.springframework.boot:spring-boot-devtools'
