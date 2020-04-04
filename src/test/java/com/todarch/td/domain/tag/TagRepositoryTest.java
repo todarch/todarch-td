@@ -4,6 +4,7 @@ import com.todarch.td.domain.shared.Tag;
 import com.todarch.td.helper.RepositoryTest;
 import com.todarch.td.helper.TestTag;
 import com.todarch.td.helper.TestTodo;
+import com.todarch.td.helper.TestUser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ public class TagRepositoryTest extends RepositoryTest {
 
   @Test
   public void userIdAndNameTogetherShouldBeUnique() {
-    TagEntity tag = new TagEntity(TestTag.ID,5L, TestTag.VALUE);
-    TagEntity sameTag = new TagEntity(TestTag.ID, 5L, TestTag.VALUE);
+    TagEntity tag = new TagEntity(TestTag.ID, TestUser.ID, TestTag.VALUE);
+    TagEntity sameTag = new TagEntity(TestTag.ID, TestUser.ID, TestTag.VALUE);
     tem.persistAndFlush(tag);
     try {
       tem.persistAndFlush(sameTag);
@@ -37,11 +38,11 @@ public class TagRepositoryTest extends RepositoryTest {
     var nonExistingTodoTags = tagRepository.findAllByTodoId(TestTodo.nextId());
     Assertions.assertThat(nonExistingTodoTags).isEmpty();
 
-    var tagEntity = new TagEntity(TestTag.ID,5L, TestTag.VALUE);
+    var tagEntity = new TagEntity(TestTag.ID,TestUser.ID, TestTag.VALUE);
     tagEntity.assignTo(TestTodo.ID);
     tem.persistFlushFind(tagEntity);
 
-    var anotherUnrelatedTagEntity = new TagEntity(TestTag.nextId(),6L, Tag.of("Tag3"));
+    var anotherUnrelatedTagEntity = new TagEntity(TestTag.nextId(),TestUser.ANOTHER_USER_ID, Tag.of("Tag3"));
     anotherUnrelatedTagEntity.assignTo(TestTodo.nextId());
     tem.persistFlushFind(anotherUnrelatedTagEntity);
 
@@ -52,7 +53,7 @@ public class TagRepositoryTest extends RepositoryTest {
 
   @Test
   public void shouldRemoveUnassignedTag() {
-    var tagEntity = new TagEntity(TestTag.ID,5L, TestTag.VALUE);
+    var tagEntity = new TagEntity(TestTag.ID,TestUser.ID, TestTag.VALUE);
     tagEntity.assignTo(TestTodo.ID);
     tem.persistFlushFind(tagEntity);
 

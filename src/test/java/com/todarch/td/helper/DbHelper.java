@@ -50,7 +50,7 @@ public class DbHelper {
    *
    * @return created td object in detached state.
    */
-  public TodoEntity createTodoFor(Long userId, NewTodoReq newTodoReq) {
+  public TodoEntity createTodoFor(String userId, NewTodoReq newTodoReq) {
     var newTodoCommand = todoManagerMapper.toNewTodoCommand(newTodoReq, userId);
     TodoEntity todoEntity = TodoFactory.from(newTodoCommand, TestTodo.nextId());
     var testTag = new TagEntity(TestTag.nextId(), userId, Tag.of("testTag"));

@@ -6,6 +6,7 @@ import com.todarch.td.domain.todo.TodoStatus;
 import com.todarch.td.helper.Requests;
 import com.todarch.td.helper.ServiceIntTest;
 import com.todarch.td.rest.todo.model.NewTodoReq;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class TodoQueryManagerIntTest extends ServiceIntTest {
   @Test
   public void shouldFilterByStatus() {
     TodoEntity testTodo = dbHelper.createTestTodo();
-    Long userId = testTodo.userId();
+    String userId = testTodo.userId();
 
     String initialStatusQuery = "todoStatus==INITIAL";
     String doneStatusQuery = "todoStatus==DONE";
@@ -67,15 +68,15 @@ public class TodoQueryManagerIntTest extends ServiceIntTest {
   @Test
   public void rsqlQueryShouldWorkOnTodosBelongingToGivenUserId() throws Exception {
     TodoEntity testTodo = dbHelper.createTestTodo();
-    Long testUserId = testTodo.userId();
-    Long anotherUserId = testUserId + 4;
+    String testUserId = testTodo.userId();
+    String anotherUserId = UUID.randomUUID().toString();
     TodoEntity anotherUsersTodo =
         dbHelper.createTodoFor(anotherUserId, Requests.newTodoReqWithoutTags());
 
     String initialStatusQuery = "todoStatus==INITIAL";
     // expected to have a single unique value in these list,
     // keep it this way to make it more explicit
-    List<Long> userIdsOfTodos =
+    List<String> userIdsOfTodos =
         todoQueryManager.searchByRsqlQuery(initialStatusQuery, testUserId)
         .stream()
         .map(TodoDto::getUserId)

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class StatusChangeCommand {
-  private Long userId;
+  private String userId;
   private TodoId todoId;
   private TodoStatus changeTo;
 }
