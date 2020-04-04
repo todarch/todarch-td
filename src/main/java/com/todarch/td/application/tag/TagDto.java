@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TagDto {
   private Long tagId;
-  private Long userId;
+  private String userId;
   private String name;
 }

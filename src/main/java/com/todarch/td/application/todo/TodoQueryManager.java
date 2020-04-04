@@ -42,8 +42,8 @@ public class TodoQueryManager {
    * @param rsqlQuery rsql valid query
    * @return items matching specification constructed of query
    */
-  public List<TodoDto> searchByRsqlQuery(String rsqlQuery, @NonNull Long userId) {
-    String userScopedRsql = "userId==" + String.valueOf(userId) + ";" + rsqlQuery;
+  public List<TodoDto> searchByRsqlQuery(String rsqlQuery, @NonNull String userId) {
+    String userScopedRsql = "userId==" + userId + ";" + rsqlQuery;
     Node rootNode = new RSQLParser().parse(userScopedRsql);
     Specification<TodoEntity> spec = rootNode.accept(new CustomRsqlVisitor<>());
 
@@ -71,7 +71,7 @@ public class TodoQueryManager {
   /**
    * Looks for a single td item by its id and user id.
    */
-  public Optional<TodoDto> getUserTodoById(@NonNull Long todoId, Long userId) {
+  public Optional<TodoDto> getUserTodoById(@NonNull Long todoId, String userId) {
     String todoByIdQuery = "id==" + String.valueOf(todoId);
     List<TodoDto> todoDtos = searchByRsqlQuery(todoByIdQuery, userId);
 
@@ -89,7 +89,7 @@ public class TodoQueryManager {
   /**
    * Gets all of items by a user id.
    */
-  public List<TodoDto> getAllTodosByUserId(@NonNull Long userId) {
+  public List<TodoDto> getAllTodosByUserId(@NonNull String userId) {
     List<TodoEntity> allByUserId = todoRepository.findAllByUserId(userId);
     return toTodoDtos(allByUserId);
   }

@@ -7,4 +7,4 @@ spring:
     password: "admin"
 
 keycloak:
-  auth-server-url: ${AUTH_SERVER_URL:http://localhost:7006/auth}
+  auth-server-url: ${AUTH_SERVER_URL:http://localhost:7007/auth}

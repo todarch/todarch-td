@@ -27,7 +27,7 @@ public class TodoEntity extends AuditEntity {
   private TodoId id;
 
   @Column(nullable = false)
-  private Long userId;
+  private String userId;
 
   @Column(nullable = false)
   private String title;
@@ -63,7 +63,7 @@ public class TodoEntity extends AuditEntity {
    * @param title title of the item
    */
   TodoEntity(@NonNull TodoId todoId,
-             @NonNull Long userId,
+             @NonNull String userId,
              @NonNull String title) {
     this.id = todoId;
     this.userId = userId;
@@ -78,7 +78,7 @@ public class TodoEntity extends AuditEntity {
     return id;
   }
 
-  public Long userId() {
+  public String userId() {
     return userId;
   }
 
@@ -152,7 +152,7 @@ public class TodoEntity extends AuditEntity {
     return TodoStatus.DONE.equals(todoStatus);
   }
 
-  public boolean canBeDeletedBy(@NonNull Long userId) {
+  public boolean canBeDeletedBy(@NonNull String userId) {
     return this.userId().equals(userId);
   }
 }

@@ -30,7 +30,7 @@ public class TagEntity {
   private TagId id;
 
   @Column(nullable = false)
-  private Long userId;
+  private String userId;
 
   @Column(nullable = false)
   private String name;
@@ -55,7 +55,7 @@ public class TagEntity {
    * Accepts the minimum number of required values.
    */
   public TagEntity(@NonNull TagId tagId,
-                   @NonNull Long userId,
+                   @NonNull String userId,
                    @NonNull Tag tag) {
     this.id = tagId;
     this.userId = userId;
@@ -70,7 +70,7 @@ public class TagEntity {
     return Tag.of(name);
   }
 
-  public Long userId() {
+  public String userId() {
     return userId;
   }
 

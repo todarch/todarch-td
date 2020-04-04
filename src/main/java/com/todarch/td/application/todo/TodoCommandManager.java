@@ -33,7 +33,7 @@ public class TodoCommandManager {
    */
   @Transactional
   public Long createTodo(@NonNull TodoCreationCommand todoCreationCommand) {
-    Long userId = todoCreationCommand.getUserId();
+    String userId = todoCreationCommand.getUserId();
     TodoEntity newTodo = TodoFactory.from(todoCreationCommand, todoIdGenerator.next());
     TodoEntity savedTodo = todoRepository.save(newTodo);
     log.info("Saved todo with id of {}", savedTodo.id());
@@ -83,7 +83,7 @@ public class TodoCommandManager {
     todoRepository.save(todoEntity);
   }
 
-  private TodoEntity tryToFindTodoByIdAndUserId(TodoId todoId, Long userId) {
+  private TodoEntity tryToFindTodoByIdAndUserId(TodoId todoId, String userId) {
     return todoRepository.findByIdAndUserId(todoId, userId)
         .orElseThrow(() -> new RuntimeException("Resource not found"));
   }

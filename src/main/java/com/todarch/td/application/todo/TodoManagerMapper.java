@@ -51,7 +51,7 @@ public final class TodoManagerMapper {
    * @param todoId identifier of the td item
    */
   public TodoFullUpdateCommand toTodoFullUpdateCommand(@NonNull TodoFullUpdateReq req,
-                                                       @NonNull Long userId,
+                                                       @NonNull String userId,
                                                        @NonNull TodoId todoId) {
     var todoFullUpdateCommand = new TodoFullUpdateCommand(userId, req.getTitle(), todoId);
     todoFullUpdateCommand.setDescription(Objects.requireNonNull(req.getDescription()));
@@ -65,7 +65,7 @@ public final class TodoManagerMapper {
    * Create command from request.
    */
   public TodoCreationCommand toNewTodoCommand(@NonNull NewTodoReq newTodoReq,
-                                              @NonNull Long userId) {
+                                              @NonNull String userId) {
     var newTodoCommand = new TodoCreationCommand(userId, newTodoReq.getTitle());
     newTodoCommand.setDescription(newTodoReq.getDescription());
     newTodoCommand.setPriority(Priority.of(newTodoReq.getPriority()));

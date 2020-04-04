@@ -11,6 +11,8 @@ import com.todarch.td.application.todo.TodoManagerMapper;
 import com.todarch.td.application.todo.TodoQueryManager;
 import com.todarch.td.domain.todo.TodoId;
 import com.todarch.td.domain.todo.TodoStatus;
+import com.todarch.td.infrastructure.security.CurrentUser;
+import com.todarch.td.infrastructure.security.CurrentUserProvider;
 import com.todarch.td.rest.todo.model.NewTodoReq;
 import com.todarch.td.rest.todo.model.NewTodoRes;
 import com.todarch.td.rest.todo.model.TodoFullUpdateReq;
@@ -37,6 +39,7 @@ public class TodoController {
   private final TodoCommandManager todoCommandManager;
   private final TodoQueryManager todoQueryManager;
   private final TodoManagerMapper todoManagerMapper;
+  private final CurrentUserProvider currentUserProvider;
 
   /**
    * Creates a new td for current user.
@@ -44,10 +47,7 @@ public class TodoController {
    */
   @PostMapping(Endpoints.TODOS)
   public ResponseEntity<NewTodoRes> createTodo(@RequestBody NewTodoReq newTodoReq) {
-    // UserContext userContext = SecurityUtil.tryToGetUserContext();
-    Long userId = 10L; //userContext.getUserId();
-
-    var newTodoCommand = todoManagerMapper.toNewTodoCommand(newTodoReq, userId);
+    var newTodoCommand = todoManagerMapper.toNewTodoCommand(newTodoReq, currentUserId());
 
     Long newTodoId = todoCommandManager.createTodo(newTodoCommand);
 
@@ -64,9 +64,14 @@ public class TodoController {
    */
   @GetMapping(Endpoints.TODOS)
   public ResponseEntity<List<TodoDto>> currentUserTodos() {
-    Long userId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
-    List<TodoDto> todos = todoQueryManager.getAllTodosByUserId(userId);
+    String currentUserId = currentUserId();
+    List<TodoDto> todos = todoQueryManager.getAllTodosByUserId(currentUserId);
     return ResponseEntity.ok(todos);
+  }
+
+  private String currentUserId() {
+    CurrentUser currentUser = currentUserProvider.currentUser();
+    return currentUser.getId();
   }
 
   /**
@@ -77,8 +82,7 @@ public class TodoController {
    */
   @GetMapping("/api/todos/{todoId}")
   public ResponseEntity<TodoDto> getCurrentUserTodoById(@PathVariable("todoId") Long todoId) {
-    Long userId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
-    var optionalTodoDto = todoQueryManager.getUserTodoById(todoId, userId);
+    var optionalTodoDto = todoQueryManager.getUserTodoById(todoId, currentUserId());
 
     if (optionalTodoDto.isPresent()) {
       return ResponseEntity.ok(optionalTodoDto.get());
@@ -115,7 +119,7 @@ public class TodoController {
   @DeleteMapping("/api/todos/{todoId}")
   public ResponseEntity<Object> deleteTodo(@PathVariable("todoId") Long todoId) {
     TodoDeletionCommand tdc = new TodoDeletionCommand();
-    // tdc.setUserId(SecurityUtil.tryToGetUserContext().getUserId());
+    tdc.setUserId(currentUserId());
     tdc.setTodoId(TodoId.of(todoId));
 
     todoCommandManager.delete(tdc);
@@ -130,12 +134,10 @@ public class TodoController {
   @PutMapping("/api/todos/{todoId}")
   public ResponseEntity<Object> updateTodoFully(@PathVariable("todoId") Long todoId,
                                                 @RequestBody TodoFullUpdateReq todoFullUpdateReq) {
-
-    Long userId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
     var todoFullUpdateCommand =
         todoManagerMapper.toTodoFullUpdateCommand(
             todoFullUpdateReq,
-            userId,
+            currentUserId(),
             TodoId.of(todoId));
 
     todoCommandManager.updateTodoFully(todoFullUpdateCommand);
@@ -153,9 +155,8 @@ public class TodoController {
   @GetMapping(path = "/api/todos/")
   public ResponseEntity<List<TodoDto>> queryCurrentUserTodosInRsql(
       @RequestParam(value = "q") String query) {
-    Long currentUserId = 10L; //SecurityUtil.tryToGetUserContext().getUserId();
     try {
-      List<TodoDto> result = todoQueryManager.searchByRsqlQuery(query, currentUserId);
+      List<TodoDto> result = todoQueryManager.searchByRsqlQuery(query, currentUserId());
       return ResponseEntity.status(HttpStatus.OK).body(result);
     } catch (Exception catchAllEx) {
       log.error("Could not handle rsql query: {}", query, catchAllEx);

@@ -10,11 +10,11 @@ import java.util.Set;
 @Getter
 public class ReTaggingTodoCommand {
   private final TodoId todoId;
-  private final Long userId;
+  private final String userId;
   private Set<Tag> newTags;
 
   ReTaggingTodoCommand(@NonNull TodoId todoId,
-                       @NonNull Long userId,
+                       @NonNull String userId,
                        @NonNull Set<Tag> newTags) {
     this.todoId = todoId;
     this.userId = userId;

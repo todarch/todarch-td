@@ -52,13 +52,13 @@ public class TagCommandManager {
         .forEach(tagEntity -> tagEntity.assignTo(cmd.getTodoId()));
   }
 
-  private TagEntity getOrCreateTag(Long userId, Tag tag) {
+  private TagEntity getOrCreateTag(String userId, Tag tag) {
     return tagRepository
         .findByUserIdAndName(userId, tag.value())
         .orElseGet(() -> tagRepository.save(newTagEntity(userId, tag)));
   }
 
-  private TagEntity newTagEntity(Long userId, Tag tag) {
+  private TagEntity newTagEntity(String userId, Tag tag) {
     return new TagEntity(tagIdGenerator.next(), userId, tag);
   }
 }

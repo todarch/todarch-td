@@ -18,13 +18,13 @@ public class TodoCreationCommand {
   private Priority priority;
   private Duration timeNeeded;
   private Set<Tag> tags;
-  private Long userId;
+  private String userId;
 
   /**
    * Creates TodoCreationCommand with default values.
    * Use set methods to override.
    */
-  TodoCreationCommand(Long userId, String title) {
+  TodoCreationCommand(String userId, String title) {
     this.title = title;
     this.userId = userId;
     this.priority = Priority.DEFAULT;

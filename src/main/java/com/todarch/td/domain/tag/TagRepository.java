@@ -17,7 +17,7 @@ public interface TagRepository extends JpaRepository<TagEntity, TagId> {
    * Neither of the values is unique for its column,
    * but together they are unique.
    */
-  Optional<TagEntity> findByUserIdAndName(Long userId, String tagName);
+  Optional<TagEntity> findByUserIdAndName(String userId, String tagName);
 
   @Query("SELECT te FROM TagEntity te INNER JOIN te.taggedTodos tt WHERE tt.id.todoId = :todoId")
   List<TagEntity> findAllByTodoId(@Param("todoId") Long todoId);

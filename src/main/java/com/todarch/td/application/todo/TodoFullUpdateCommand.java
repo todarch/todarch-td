@@ -10,7 +10,7 @@ import lombok.Setter;
 public class TodoFullUpdateCommand extends TodoCreationCommand {
   private TodoId todoId;
 
-  public TodoFullUpdateCommand(Long userId, String title, TodoId todoId) {
+  public TodoFullUpdateCommand(String userId, String title, TodoId todoId) {
     super(userId, title);
     this.todoId = todoId;
   }

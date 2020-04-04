@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface TodoRepository
     extends JpaRepository<TodoEntity, TodoId>, JpaSpecificationExecutor<TodoEntity> {
 
-  List<TodoEntity> findAllByUserId(Long userId);
+  List<TodoEntity> findAllByUserId(String userId);
 
-  Optional<TodoEntity> findByIdAndUserId(TodoId todoId, Long userId);
+  Optional<TodoEntity> findByIdAndUserId(TodoId todoId, String userId);
 }

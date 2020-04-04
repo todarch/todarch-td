@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class TodoDto {
   private long id;
-  private long userId;
+  private String userId;
   private String title;
   private String description;
   private int priority;

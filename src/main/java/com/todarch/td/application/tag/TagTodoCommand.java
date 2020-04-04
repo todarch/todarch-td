@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 public class TagTodoCommand {
-  private Long userId;
+  private String userId;
   private TodoId todoId;
   private Set<Tag> tags;
 }

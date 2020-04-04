@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TodoDeletionCommand {
-  private Long userId;
+  private String userId;
   private TodoId todoId;
 }
